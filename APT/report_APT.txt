@@ -1,0 +1,37 @@
+
+	Basic Debian Package Management
+	eripe320	Erik Peyronson
+	johle727	Johan Levinsson
+
+
+
+a) Which apt-get sub-command is used to install new packages.
+
+	install
+
+b) Which apt-get sub-command is used to remove packages.
+
+	remove
+
+c) What does apt-get update do.
+
+	Updates software sources. 
+
+d) What does apt-get dist-upgrade do.
+
+	Installs the newest versions of all packages currently installed on the system. Also intelligently handles
+	dependencies. 
+
+1-2 Read the documentation for dpkg and answer the following questions.
+
+a) What does dpkg --get-selections do.
+
+	Outputs a list of packages. Without a given pattern, non installed packages will not be shown. 
+
+b) What does dpkg --purge vim do.
+
+	Uninstalls a package and removes all it's config files 
+
+c) What does dpkg -L bind9 do.
+
+	Lists files which the bind9 packet has installed on your system. 

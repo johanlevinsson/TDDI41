@@ -1,0 +1,14 @@
+/data/kurs/adit/bin/mln start -p lab-1  starts all UML instances for lab-1.
+/data/kurs/adit/bin/mln stop -p lab-1   stops all UML instances for lab-1.
+
+
+
+1-1 linux
+1-2 -mem anger hur mycket minne man vill allokera för det virtuella systemet. 
+1-3 uml_switch är ett program som körs för att hantera virtuella nätverk mellan olika virtuella maskiner i user mode utan koppling till värdsystemets nätverk. 
+1-4 det är en fil hos värdsystemet som innehåller filsystemet som används av gästen. 
+1-5 Virtual distributed ethernet är det virtuella ethernet som vi kopplar ihop våra gäster med. 
+
+3-2 they all have 64MB
+
+3-3 xterm är en terminalemulator som har stöd för flera instanser samtidigt. screen är en terminalmultiplexer, så att samma terminal växlar mellan olika processer. 
