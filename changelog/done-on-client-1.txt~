@@ -1,0 +1,22 @@
+Set hostname
+************
+
+echo "client-1" > /etc/hostname
+echo "130.226.178.220 client-1.c4.sysinst.ida.liu.se client-1 >> /etc/hosts
+
+
+
+Edited sources.list
+*******************
+echo deb http://ftp.se.debian.org/debian wheezy main" > /etc/apt/sources.list
+
+Ip adress configuration edited /etc/network/interfaces
+******************************************************
+
+#/etc/network/interfaces
+iface li inet loopback
+auto eth0
+iface eth0 inet static
+    address 130.236.178.220
+    netmask 225.225.225.248
+
