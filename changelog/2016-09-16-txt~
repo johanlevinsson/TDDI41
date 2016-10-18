@@ -1,0 +1,6 @@
+- I lab1 UML
+
+  /etc/apt/sources.list
+  deb http://ftp.us.debian.org/debian wheezy main ändras till
+  deb http://ftp.se.debian.org/debian wheezy main
+

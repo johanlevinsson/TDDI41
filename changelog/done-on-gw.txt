@@ -1,0 +1,135 @@
+
+In Router:
+*********
+
+Edit hostnames
+******************
+echo "gw" > /etc/hostname
+echo "130.236.178.218 gw.c4.sysinst.ida.liu.se gw >> /etc/hosts
+
+#/etc/hostname
+gw
+
+#/etc/hosts
+127.0.0.1	localhost
+::1     ip6-localhost ip6-loopback
+fe00::0 ip6-localnet
+ff00::0 ip6-mcastprefix
+ff02::1 ip6-allnodes
+ff02::2 ip6-allrouters
+ff02::3 ip6-allhosts
+130.236.178.218 gw.c4.sysinst.ida.liu.se gw
+
+
+Ip adress configuration edited /etc/network/interfaces
+******************************************************
+
+#/etc/network/interfaces
+iface li inet loopback
+auto eth0
+iface eth0 inet static
+    address 130.236.178.218
+    netmask 225.225.225.248
+auto eth1
+iface eth1 inet static
+    address 130.236.178.25
+    netmask 225.225.225.0
+    gatweay 130.236.178.1
+
+Name resolution: Edited /etc/resolv.conf
+****************************************
+domain ida.liu.se
+search ida.liu.se
+nameserver 130.236.1.9
+nameserver 130.236.186.13
+nameserver 130.236.186.16
+
+
+Edited /etc/nsswitch
+********************
+hosts dns files
+
+Edited /etc/apt/sources.list
+****************************
+deb http://ftp.se.debian.org/debian wheezy main
+
+added key
+************
+gw$ apt-key adv --keyserver keyserver.ubuntu.com --recv-keys 8B48AD6246925553
+
+installed packages
+******************************
+gw$ apt-get install openssh-server
+gw$ apt-get install less
+gw$ apt-get install telnet
+
+##########################
+###Quagga configuration###
+##########################
+
+
+copied sample files for ripd and zebra
+**************************************
+
+$cp /usr/share/doc/quagga/examples/zebra.conf.sample /etc/quagga/zebra.conf
+#cp /usr/share/doc/quagga/examples/ripd.conf.sample/etc/quagga/ripd.conf
+
+changed ownership and rights for files
+**************************************
+chown quagga:quagga /etc/quagga/zebra.conf
+chmod 640 /etc/quagga/zebra.conf
+
+chown quagga:quagga /etc/quagga/zebra.conf
+chmod 640 /etc/quagga/zebra.conf
+
+Edited /etc/quagga/daemons.conf
+*******************************
+zebra=yes
+bgpd=no
+ospfd=no
+ospf6d=no
+ripd=yes
+ripngd=no
+
+restarted quagga
+****************
+$/etc/init.d/quagga restart
+
+telnet to zebra
+***************
+
+gw$ telnet localhost zebra
+
+>
+
+
+ripd.conf
+**************
+
+hostname ripd
+password zebra
+log stdout
+interface eth1
+!
+router rip
+  version2
+  redistribute connect
+  redistribute static
+  network eth0
+!
+line vty
+!
+
+/*
+gw$ telnet localhost ripd
+
+> enable
+> clonfigure terminal
+> interface eth1
+> router rip
+> version 2
+> network 130.236.178.216/29
+*/
+
+   	    //> ip rip authentication string 
+
