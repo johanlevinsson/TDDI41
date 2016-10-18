@@ -1,7 +1,7 @@
 
 	Basic Debian Package Management
 	eripe320	Erik Peyronson
-	johle727	Johan Levinsson
+	johle727	Johan Levinssson
 
 
 
@@ -35,3 +35,28 @@ b) What does dpkg --purge vim do.
 c) What does dpkg -L bind9 do.
 
 	Lists files which the bind9 packet has installed on your system. 
+
+
+
+
+
+6-1 What command in aptitude will cause the package list to contain only those packages whose names contain a specific word.
+
+	l
+	
+
+6-2 What command in aptitude lets you search the package list without hiding anything.
+
+	/
+
+6-3 What command marks a package for installation? For deletion.
+
+	g
+
+6-4 What command causes all selected actions (installation, deletion, and upgrades) to take place.
+
+	u
+
+6-5 If there is a B in the leftmost column, what does that mean.
+
+	The package has broken dependencies.

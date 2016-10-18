@@ -17,3 +17,11 @@
 3-2 they all have 64MB
 
 3-3 xterm är en terminalemulator som har stöd för flera instanser samtidigt. screen är en terminalmultiplexer, så att samma terminal växlar mellan olika processer. 
+
+6-1 What command would you use to copy the file /etc/network/interfaces from the UML to marsix.
+
+	johle727@marsix:~$  scp 10.17.1.220:/etc/network/interfaces /etc/network/
+
+6-2 What command would you use to copy the directory /etc/default (and all its contents) from the UML to marsix.
+
+	johle727@marsix:~$  scp -r 10.17.1.220:/etc/default /etc/

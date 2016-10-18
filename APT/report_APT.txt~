@@ -1,7 +1,7 @@
 
 	Basic Debian Package Management
 	eripe320	Erik Peyronson
-	johle727	Johan Levinsson
+	johle727	Johan Levinssson
 
 
 
@@ -34,4 +34,13 @@ b) What does dpkg --purge vim do.
 
 c) What does dpkg -L bind9 do.
 
-	Lists files from the bind9 packet who are installed on your system. 
+	Lists files which the bind9 packet has installed on your system. 
+
+
+
+
+
+ 8lUSa9lz
+
+
+c1 = c2 + c3; 
