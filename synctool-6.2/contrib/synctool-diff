@@ -1,0 +1,161 @@
+#!/bin/bash
+
+# Compares a file on a node with the synctool version.
+# Synctool can do that too, but only with a text diff, not with a nice GUI like meld.
+
+# 2010-09-28 - Created by Onno with tips from Walter dJ
+# 2010-10-05 - Made more generic - Onno
+# 2010-11-13 - changed decision of interface/hostname - WdJ
+# 2010-11-13 - safer + BSD compatible mktemp - WdJ
+# 2010-11-18 - will start meld even if files are equal - Onno
+# 2011-03-21 - pointed to default location of synctool.conf - Onno
+# 2011-05-13 - scp can't copy files if root has no access, fixing with rsync - Onno
+# 2011-05-27 - improved regex - Onno
+# 2012-02-08 - improved uniqueness of temp file names - Onno
+# 2012-04-16 - improved grep regex to parse synctool.conf - Onno
+# 2014-06-25 - you can now specify 'node:' to compare all unsynced files for that node - Onno
+# 2014-08-14 - ran code through http://www.shellcheck.net - Onno
+# 2014-08-14 - read masterdir from synctool-config - Onno
+
+SYNCTOOL_CONF=/var/lib/synctool/synctool.conf
+
+function usage() {
+echo "Compares files across a cluster, managed by synctool or not.
+
+Syntax:
+
+  Compare file in synctool overlay tree with file on node:
+    $(basename "$0") node:/path/file
+
+  Compare all files on node not in sync with their synctool overlay counterparts:
+    $(basename "$0") node:
+
+  Compare files on nodes or local:
+    $(basename "$0") [node1:]/path1/file1 [node2:]/path2/file2
+
+'node' can be hostname (if declared in synctool.conf) or interface name.
+"
+exit 1
+}
+
+
+if [ -z "$1" ] ; then
+  usage
+fi
+
+
+function process_parm() {
+  # See if the file is local or on a node, which node, etcetera.
+  # This function works with bash arrays. I is the index (1 for the first file, 2 for the second file).
+  PARM="$1"
+  I=$2
+  if echo "$PARM" | grep --silent ':' ; then
+    # File is on a node.
+    NODE[I]="${PARM%:*}"
+    FILE[I]="${PARM#*:}"
+
+    INTERFACE[I]=$(grep -e "^node[[:space:]]*${NODE[I]}[[:space:]]" $SYNCTOOL_CONF \
+                   | grep -o 'interface:[^[:space:]]*' \
+                   | sed 's/interface://')
+    if [ -z "${INTERFACE[I]}" ] ; then
+      # interface not found, assume interface is the same as node name
+      INTERFACE[I]=${NODE[I]}
+    fi
+    # We include $I in the temp file name to improve uniqueness;
+    # fix for example case: fta1:/etc/gmond.conf - fta1:/etc/ganglia/gmond.conf
+    DIFF_FILE[I]=$PREFIX-${NODE[I]}-$I-$(basename "${FILE[I]}")
+    # Use rsync to copy the file from the node; scp refuses when there are ownership issues.
+    rsync -a "${INTERFACE[I]}":"${FILE[I]}" "${DIFF_FILE[I]}" \
+      && cp -a "${DIFF_FILE[I]}" "${DIFF_FILE[I]}.copy-to-check-changes"
+  else
+    # File is local.
+    FILE[I]="$PARM"
+    DIFF_FILE[I]="$PARM"
+    if [ ! -f "${FILE[I]}" ] ; then
+      echo "File ${FILE[I]} does not exist."
+      exit 2
+    fi
+  fi
+}
+
+function return_changed_file_to_node() {
+  I=$1
+  # Copy any changes back to the node
+  if diff -q "${DIFF_FILE[I]}" "${DIFF_FILE[I]}".copy-to-check-changes > /dev/null ; then
+    echo "File ${NODE[I]}:${FILE[I]} has not changed."
+  else
+    echo "File ${NODE[I]}:${FILE[I]} has changed. Uploading changes."
+    rsync -a "${DIFF_FILE[I]}" "${INTERFACE[I]}":"${FILE[I]}"
+  fi
+}
+
+function check_file() {
+  FILE="$1" ; shift
+  EXPLANATION="$*"
+  if [ ! -f "$FILE" ] ; then
+    echo "ERROR: $EXPLANATION"
+    # Cleaning up
+    if [ ! -z "$PREFIX" ]; then
+      rm -f "$PREFIX"*
+    fi
+    exit 3
+  fi
+}
+
+# Initialize arrays
+FILE=( )
+DIFF_FILE=( )
+NODE=( )
+INTERFACE=( )
+
+# Initialize other var(s)
+PREFIX=`mktemp /tmp/tmp.XXXXXXXXXX`
+
+
+# Only one file specified? Compare with synctool overlay version!
+if [ -z "$2" ] ; then
+  # Only 'node:' specified without file? Then call myself for each file on that node that is not in sync.
+  if echo "$1" | grep --silent '.:$' ; then
+    node=$(echo "$1" | sed -e 's/:.*//')
+    synclist=$(synctool -q --no-color -n "$node" \
+               | grep ': sync ' \
+               | sed -e 's/ sync //')
+    echo "Comparing file list:"
+    echo -e "$synclist\n" | sed -e 's/^/  /' 
+    for syncfile in $synclist; do
+      "$0" "$syncfile"
+    done
+    exit
+  else
+    # node:file specified (and not node: ).
+    # Process the only parm and use it as the SECOND file (because the first will be the overlay file).
+    process_parm "$1" "2"
+    check_file "${DIFF_FILE[2]}" "File '${FILE[2]}' not found on node ${NODE[2]}."
+    # The first file is the synctool overlay version
+    MASTERDIR=$(synctool-config --masterdir)
+    DIFF_FILE[1]=$(synctool -q -n "${NODE[2]}" --ref "${FILE[2]}" | grep -o "$MASTERDIR/.*")
+    check_file "${DIFF_FILE[1]}" "File '$1' not found in the synctool overlay tree."
+  fi 
+else
+  # Two parameters specified. Copy them from node if needed.
+  process_parm "$1" 1
+  check_file "${DIFF_FILE[1]}" "File '$1' not found."
+  process_parm "$2" 2
+  check_file "${DIFF_FILE[2]}" "File '$2' not found."
+fi
+
+
+# Do the great magic diff & merge & edit stuff
+echo "Comparing: '${DIFF_FILE[1]}' '${DIFF_FILE[2]}'"
+meld "${DIFF_FILE[1]}" "${DIFF_FILE[2]}"
+
+
+if [ -n "${NODE[1]}" ] ; then
+  return_changed_file_to_node 1
+fi
+if [ -n "${NODE[2]}" ] ; then
+  return_changed_file_to_node 2
+fi
+
+# Cleaning up
+rm -f "$PREFIX"*

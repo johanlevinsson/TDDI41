@@ -1,0 +1,19 @@
+
+
+
+
+setting the hostname
+basic network connectivity
+interface configuration gateway
+interface configuration client
+default gateway/route (gateway) 
+default gateway/route (client) 
+name resolution
+router configuration
+
+	routing software Quagga
+
+	routing protocol RIP
+
+RIP configuration 
+RIP Announcements 

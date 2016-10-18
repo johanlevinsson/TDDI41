@@ -1,0 +1,119 @@
+Here are some helper scripts that are handy when using synctool.
+
+It's a bit of hodge-podge collection of related scripts that have
+been in use over the years. You don't necessarily need these scripts,
+but might come in handy. They are provided AS IS and WITHOUT
+WARRANTY OF ANY KIND. The respective authors can not be held responsible
+for any damage done by these scripts.
+
+
+Files in this directory:
+
+syslog-ng-synctool.conf
+  syslog-ng configuration for filtering synctool syslog messages.
+
+logrotate.conf
+  logrotate configuration for rotating synctool.log log files.
+
+synctool-structure
+  A script that neatly displays the node configuration in formatted columns.
+  Contributed by Onno Zweers
+
+functions._none
+  A collection of files to be used by tasks, for package management and
+  service management. See instructions inside.
+  Contributed by Onno Zweers
+
+whitelist.post
+  Script that does two things:
+  - on a management node, creates a whitelist of files not to be cleaned up
+  - on a cluster node, cleanes up the directory.
+  It's far from perfect but perhaps a good starting point.
+  Contributed by Onno Zweers
+
+synctool-diff
+  Compares files across a cluster, managed by synctool or not.
+
+  Compare file in synctool overlay tree with file on node:
+    synctool-diff node:/path/file
+
+  Compare files on nodes or local:
+     synctool-diff [node1:]/path1/file1 [node2:]/path2/file2
+
+  Contributed by Onno Zweers
+
+debian/
+  contains files needed to make .deb packages from the synctool sources
+  Contributed by Dennis Stam
+
+synctool.bash_completion
+  Copy this to /etc/bash_completion.d/synctool
+  to enable bash completion
+  Contributed by Tim Dittler
+
+nmap_config.sh
+  nmaps your management LAN to create a synctool.conf file
+  Contributed by Walter
+
+synctool_csmcompat.py
+  checks for differences in node configuration between synctool-config
+  and IBM's CSM nodes
+  Contributed by Huub Stoffers (written by Walter)
+
+checkconfig
+  IRIX-like chkconfig command
+  (and note how its functionality is really entirely different from
+   RedHat/SuSE's chkconfig command)
+  Contributed by Walter
+
+ATTIC
+In the attic/ are old, obsoleted, deprecated scripts.
+
+synctool-updatechk
+  cron.weekly/monthly script that checks for availability of newer version
+  (obsoleted by synctool --check-update and synctool --download)
+  Contributed by Walter
+
+bootstrap-synctool-client.sh
+  may be used for installing clients (obsoleted)
+  Contributed by Walter
+
+overlay.py
+  proof-of-concept code for a tool that uses hardlinks
+  to construct a tree that is directly synced using rsync
+  This is an experimental code and not used in synctool
+  Mind that this code stems for the day when synctool was still
+  version 2, so there may be incompatibility issues with today's
+  synctool
+  Contributed by Walter
+
+overlay.conf.example
+  Example config file for overlay.py
+  Contributed by Walter
+
+rsynctool-single-suse.sh
+rsynctool-suse.sh
+synctool.sh
+  Wrapper scripts that work nicely with synctool 3.
+  (obsoleted by synctool 4)
+  Contributed by Huub Stoffers
+
+rsynctool-upload
+  copies files from nodes into the repository
+  (obsoleted by synctool -u)
+  Contributed by Huub Stoffers
+
+crc32.py
+  checksum replacement for synctool.py.
+  CRC-32 is fast, but regularly gives false positives
+  Contributed by Walter
+
+md5sum.py
+  checksum replacement for synctool.py (MD5 already is default)
+  Contributed by Walter
+
+sha1sum.py
+  checksum replacement for synctool.py
+  SHA-1 is slow ... but highly reliable when it comes to collisions
+  Contributed by Walter
+

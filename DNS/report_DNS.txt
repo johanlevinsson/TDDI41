@@ -1,0 +1,280 @@
+
+	DNS
+	eripe320	Erik Peyronson
+	johle727	Johan Levinsson
+
+1-1 Review the section on DNS from the basic network course.
+
+1-2 Answer the following questions (the information can be found in e.g. the RFCs that describe DNS).
+
+a) What is an authoritative name server? What is its role in DNS.
+
+	The authorative name server is the one that actually translates the hostname to an ip adress, as opposed to 
+	just redirecting to other servers that might have the requested ip adress. 
+
+b) What is the difference between a domain and a zone.
+	
+	A domain is a namespace that contains all the machines under of an organization's domain name. Unless there
+	are any subdomains, a zone is practically equal to the domain. Thus one authorative DNS server manages all 
+	machines in that domain. Should a subdomain be specified, the zone becomes the the domain and all 	
+	subdomains. 
+
+c) What is the difference between a recursive and a non-recursive query in DNS? When is each type of query used.
+
+	In a non recursive query, the local dns makes one query each and sequentially to the Root DNS server, top 
+	DNS server and authorative DNS server. In a recursive query, the local DNS server makes a query to the root 		DNS server which is forwarded to the top and then to the authorative. The reply takes the same route back
+	to the local DNS server. 
+
+d) What is the purpose of delegation in DNS.
+
+	If you delegate zones into smaller zones, configuration can be decentralized. 
+
+e) What is a resource record? What does a resource record consist of.
+
+	It's the row that maps the IP adress to a hostname. That's type A. If it's a type NS, it will redirect to 	  the next DNS server, providing the IP address of the correct authorative DNS server. There's also C-name
+	that's an alias so you can for example shorten long hostnames. MX is a mail server alias. 
+
+	It consits of a hostname, value (ip address or hostname alias), type, ttl. 
+
+f) DNS messages contain answer, authority and additional sections. What is the purpose of each section.
+
+	The authority ection contains records of othe rauthoritative servers. The answer sections contains resource
+	records for the name that was queried. The additional section could contain, for example in an MX query it
+	could hold the hostname of a mail server. 
+
+g) How does the DNS protocol indicate if an answer comes from an authoritative name server or not? How does the DNS protocol indicate whether a query is recursive or not.
+
+	The Authoritative answer bit in the response is set. 
+
+h) Explain what glue records are and when they are necessary.
+
+	It's a record pointing to a subdomain to avoid circular dependencies. 
+
+1-3 	Which zone in DNS contains PTR records corresponding to IP addresses in the network 10.131.24.64/27? 
+
+		27/64.24.131.10.in-addr.arpa
+
+	Name some other networks that have PTR records in the same zone. 
+
+		Because of naming convention when it comes to PTR records, one PTR record almost always corresponds
+		to exactly one zone. 
+
+	What is the problem with delegating authority over the DNS records corresponding only to 10.131.24.64/27.
+
+		If the authority is delegated to the network and the ip adress of the nameserver is not known
+		a glue record is needed for the name server ip adress, this creates a circular dependency which
+		some regional internet registries wont allow.
+	
+
+1-4 Explain the purpose of classless in-addr.arpa delegation. Explain how it works.
+
+	Reverse DNS lookup for ip-addresses that don't fall under class A, B, C, etc. The classless addresses have 
+	a network part that is not a factor of 8 bits. 
+
+	There are two main ways of dealing with reverse lookup of classless networks. The first is to create
+	auxillary zones for each individual network in the zone of the nearest classful network, or CNAME records 
+	pointing to the individual ptr records in the classless network.
+
+2-1 Use the host tool to answer the following questions.
+
+a) What is the address of informatix.ida.liu.se.
+
+	informatix.ida.liu.se has address 130.236.177.26
+
+
+b) What is the address of www.ida.liu.se.
+
+	www.ida.liu.se has address 130.236.177.26
+
+c) What is the address of liu.se.
+
+	liu.se has address 130.236.5.66
+
+
+2-2 Compare the output of host www.ida.liu.se ns3.liu.se and host www.ida.liu.se dns.liu.se and answer the following questions.
+
+a) Why is there no answer in the first query but in the second query.
+
+	dns.liu.se is, and ns3.liu.se isn't in the same zone as ida.liu.se
+
+b) Both answers are correct, even though they differ. Explain why.
+
+3-1 Use host to find out which name servers are authoritative for the zone adlibris.se. Which organization(s) operate them.
+	
+	johle727@li4-7:~$ host -t NS adlibris.se
+	adlibris.se name server a.ns.ip-only.net.
+	adlibris.se name server c.ns.ip-only.net.
+	adlibris.se name server b.ns.ip-only.net.
+
+	
+	IP-Only Networks AB operate them. 
+
+3-2 Use host to list all records in the sysinst.ida.liu.se zone and wc to count them. How many records are there.
+
+	johle727@li4-7:~$ host -a sysinst.ida.liu.se | grep "^sysinst" 
+	sysinst.ida.liu.se.	294	IN	MX	10 ida-gw.sysinst.ida.liu.se.
+	sysinst.ida.liu.se.	294	IN	SOA	sysinst-gw.ida.liu.se. david.byers.liu.se. 2016093001 3600
+	1800 604800 300
+	sysinst.ida.liu.se.	294	IN	NS	ns.ida.liu.se.
+	sysinst.ida.liu.se.	294	IN	NS	sysinst-gw.ida.liu.se.
+
+
+	johle727@li4-7:~$ host -a sysinst.ida.liu.se | grep "^sysinst" | wc -l
+	4
+
+	There are records. 
+
+3-3 Use host to find out all information you can about the name ida.liu.se (i.e. the name itself, not the contents of the zone). What did you find out? How can you be sure that is all the information that is available.
+
+	johle727@li4-7:~$ host -a sysinst.ida.liu.se 
+	Trying "sysinst.ida.liu.se"
+	;; ->>HEADER<<- opcode: QUERY, status: NOERROR, id: 57235
+	;; flags: qr rd ra; QUERY: 1, ANSWER: 4, AUTHORITY: 0, ADDITIONAL: 0
+
+	;; QUESTION SECTION:
+	;sysinst.ida.liu.se.		IN	ANY
+
+	;; ANSWER SECTION:
+	sysinst.ida.liu.se.	300	IN	MX	10 ida-gw.sysinst.ida.liu.se.
+	sysinst.ida.liu.se.	300	IN	SOA	sysinst-gw.ida.liu.se. david.byers.liu.se. 2016093001 3600
+	1800 604800 300
+	sysinst.ida.liu.se.	300	IN	NS	sysinst-gw.ida.liu.se.
+	sysinst.ida.liu.se.	300	IN	NS	ns.ida.liu.se.
+
+	Received 149 bytes from 130.236.1.9#53 in 5 ms
+
+4-1 Use dig to answer the following questions.
+
+a) What is the address of ida-gw.sysinst.ida.liu.se.
+
+	johle727@li4-7:~$ dig +short ida.liu.se
+	130.236.177.25
+
+
+b) Which nameservers have authoritative information for sysinst.ida.liu.se.
+
+	johle727@li4-7:~$ dig ida.liu.se -t A +short
+	130.236.177.25
+
+c) Which name corresponds to the IPv4 address 130.236.189.1.
+
+	johle727@li4-7:~$ dig -x 130.236.189.1 +short
+	idagw-189.ida.liu.se.
+
+	idagw-189
+
+4-2 Use the trace feature of dig to answer the following questions.
+
+a) What nameservers are consulted in a query for the A record of www.ida.liu.se.
+
+	johle727@li4-7:~$ dig ida.liu.se -t A +trace | grep "NS"
+	.			76368	IN	NS	d.root-servers.net.
+	.			76368	IN	NS	j.root-servers.net.
+	.			76368	IN	NS	k.root-servers.net.
+	.			76368	IN	NS	g.root-servers.net.
+	.			76368	IN	NS	l.root-servers.net.
+	.			76368	IN	NS	c.root-servers.net.
+	.			76368	IN	NS	a.root-servers.net.
+	.			76368	IN	NS	m.root-servers.net.
+	.			76368	IN	NS	b.root-servers.net.
+	.			76368	IN	NS	e.root-servers.net.
+	.			76368	IN	NS	f.root-servers.net.
+	.			76368	IN	NS	i.root-servers.net.
+	.			76368	IN	NS	h.root-servers.net.
+	.			253984	IN	RRSIG	NS 8 0 518400 20161026170000 20161013160000 39291 .
+	G9SlNExUmiEIHvYonp9pSrsKpJT0IWAjhV3kl/ebKQWteAhGYfbxFUCI xP7O8Sa6MEKorLLYPqEpdE3QeVZ3pCHPqfkLB6xvrGg+zDoh6
+	/jcaRHx iBWHkJ9xwDKt/VU8idfAPF8hR3fZsuneCmxeuTyw3dHfALImThOI7LEb Z8gtP1azKdy5b4Jt774sEw9nhZeandL6QL/3Epq
+	j+32bIfuLsxwdn0Rn SAPyVoMqV4OW99ovdsHRuZocK3aFv2pQSjwON9RFlrNmEAFeHiO9QOqF RNBSRCZs+9w9krpGT5fKdIV5FmM+d
+	B8zdkRK94k9BJD5gbH8vQG3I509 SpQvrA==
+	se.			172800	IN	NS	c.ns.se.
+	se.			172800	IN	NS	a.ns.se.
+	se.			172800	IN	NS	j.ns.se.
+	se.			172800	IN	NS	e.ns.se.
+	se.			172800	IN	NS	d.ns.se.
+	se.			172800	IN	NS	f.ns.se.
+	se.			172800	IN	NS	b.ns.se.
+	se.			172800	IN	NS	g.ns.se.
+	se.			172800	IN	NS	i.ns.se.
+	liu.se.			86400	IN	NS	ns4.liu.se.
+	liu.se.			86400	IN	NS	ns3.liu.se.
+	liu.se.			86400	IN	NS	sunic.sunet.se.
+	ida.liu.se.		14400	IN	NS	ns2.liu.se.
+	ida.liu.se.		14400	IN	NS	ns1.liu.se.
+	ida.liu.se.		14400	IN	NS	nsauth.isy.liu.se.
+	ida.liu.se.		14400	IN	NS	ns.ida.liu.se.
+	80olooa3ouup92dpsej4ujtss1587e0h.liu.se. 600 IN	NSEC3 1 0 75 
+	A0DADA9595A5FB0C06959470406CB382K6E958EGUMK51O6G5OSP7UJ8KDFBRU NS
+	80olooa3ouup92dpsej4ujtss1587e0h.liu.se. 600 IN	RRSIG NSEC3 8 3 600 20161110105634 20161013105243 38451
+	liu.se. FO+muLwAZjA+8LiszyUY+fyb/2+EFT8KLzJt8bUZ7nawhjzA22D26apT rz1Br7+JfGMOCQzarRLhU32
+	+MRXcltXV7oEZu3ZvOpjDwojo49BGLJao RBldhc1dh45Q5Sen8LsbjGh2+ww6Ij7Zkzv4Ai1c7LZjNS9w+Rrwbb2J O4s=
+	ida.liu.se.		86400	IN	NS	ns2.liu.se.
+	ida.liu.se.		86400	IN	NS	ns.ida.liu.se.
+	ida.liu.se.		86400	IN	NS	ns1.liu.se.
+	ida.liu.se.		86400	IN	NS	nsauth.isy.liu.se.
+
+
+b) What nameservers are consulted when determining the address of update.microsoft.com? Note that the presence of a CNAME record makes this question different from the previous one: you will need to run dig more than once to get the answer.
+
+		johle727@li4-7:~$ dig www.update.microsoft.com.nsatc.net +trace | grep NS
+	.			74883	IN	NS	a.root-servers.net.
+	.			74883	IN	NS	i.root-servers.net.
+	.			74883	IN	NS	e.root-servers.net.
+	.			74883	IN	NS	m.root-servers.net.
+	.			74883	IN	NS	j.root-servers.net.
+	.			74883	IN	NS	g.root-servers.net.
+	.			74883	IN	NS	d.root-servers.net.
+	.			74883	IN	NS	h.root-servers.net.
+	.			74883	IN	NS	f.root-servers.net.
+	.			74883	IN	NS	c.root-servers.net.
+	.			74883	IN	NS	b.root-servers.net.
+	.			74883	IN	NS	k.root-servers.net.
+	.			74883	IN	NS	l.root-servers.net.
+	.			252499	IN	RRSIG	NS 8 0 518400 20161026170000 20161013160000 39291 . G9SlNEx
+	UmiEIHvYonp9pSrsKpJT0IWAjhV3kl/ebKQWteAhGYfbxFUCI xP7O8Sa6MEKorLLYPqEpdE3QeVZ3pCHPqfkLB6xvrGg+zDoh6/jcaRHx
+	iBWHkJ9xwDKt/VU8idfAPF8hR3fZsuneCmxeuTyw3dHfALImThOI7LEb Z8gtP1azKdy5b4Jt774sEw9nhZeandL6QL/3Epqj+32bIfuLsx
+	wdn0Rn SAPyVoMqV4OW99ovdsHRuZocK3aFv2pQSjwON9RFlrNmEAFeHiO9QOqF RNBSRCZs+9w9krpGT5fKdIV5FmM+dB8z
+	dkRK94k9BJD5gbH8vQG3I509 SpQvrA==
+	net.			172800	IN	NS	a.gtld-servers.net.
+	net.			172800	IN	NS	b.gtld-servers.net.
+	net.			172800	IN	NS	c.gtld-servers.net.
+	net.			172800	IN	NS	d.gtld-servers.net.
+	net.			172800	IN	NS	e.gtld-servers.net.
+	net.			172800	IN	NS	f.gtld-servers.net.
+	net.			172800	IN	NS	g.gtld-servers.net.
+	net.			172800	IN	NS	h.gtld-servers.net.
+	net.			172800	IN	NS	i.gtld-servers.net.
+	net.			172800	IN	NS	j.gtld-servers.net.
+	net.			172800	IN	NS	k.gtld-servers.net.
+	net.			172800	IN	NS	l.gtld-servers.net.
+	net.			172800	IN	NS	m.gtld-servers.net.
+	net.			86400	IN	RRSIG	DS 8 1 86400 20161030050000 20161017040000 39291 . CFpZKmXq
+	REixUlw2nSDawTLgzmk+cp+czq3pbSV0i+nnQBGSv10BbHmy yDDZBWg9XVtvkx5JU45xXQCBCKEfZ8WnbnhKdNw4b5U4zy+pfsZYXXYv ZX
+	2OPpBaCC2zDyGQT9zVOlkoURMx5wlBoAQhw2HNSDR93b2RDknTZbE2 fhNsnK0nEiFNa9r8jPT+HEKfGixZ1NF56S7ab6+EtYvuljt46rOJW
+	+ZG ZSjXzT7ibDkV5bXvOthl5nOC+z5I0wr/IPl6+DA5ThWHRi3q/oKRaSJE bQbjYfbhg3boVZyZ1FPZYwDPun65GPjm6H1GFWIcmhj1jR+
+	lDoWUKT7K M7kUCg==
+	nsatc.net.		172800	IN	NS	a.ns.nsatc.net.
+	nsatc.net.		172800	IN	NS	b.ns.nsatc.net.
+	nsatc.net.		172800	IN	NS	c.ns.nsatc.net.
+	nsatc.net.		172800	IN	NS	d.ns.nsatc.net.
+	nsatc.net.		172800	IN	NS	e.ns.nsatc.net.
+	nsatc.net.		172800	IN	NS	g.ns.nsatc.net.
+	nsatc.net.		172800	IN	NS	l.ns.nsatc.net.
+	A1RT98BS5QGC9NFI51S9HCI47ULJG6JH.net. 86400 IN NSEC3 1 1 0 - A1RUUFFJKCT2Q54P78F8EJGJ8JBK7I8B NS SOA RRSIG D
+	NSKEY NSEC3PARAM
+	A1RT98BS5QGC9NFI51S9HCI47ULJG6JH.net. 86400 IN RRSIG NSEC3 8 2 86400 20161021050343 20161014035343 2480 net
+	. o/Kq85ANQGCZfZ/wPoDHfCKff7npHH9Wxxcx/4r1rLES4Sv4d27O74aF FXr8l1A/TxUj9LNiqFPMM0ITT0Lm8/ztDqk+Xx3iEQew
+	LXtUo05ooZn2 kOdbodneO8uO9T8yMpRWCwT6OMs2LqMArdu9IXH6pAeiVjCb/9ZF/LCw Qk4=
+	G40POM4F632CHM1D2387M5PN52B2S7J5.net. 86400 IN NSEC3 1 1 0 - G41CFV4D0GL4J1S9OMS5C26ES0GL560M NS DS RRSIG
+	G40POM4F632CHM1D2387M5PN52B2S7J5.net. 86400 IN RRSIG NSEC3 8 2 86400 20161021050059 20161014035059 2480 net
+	. Bbdn59nVbhQ2NUMMhEJpXGWPeJZW/OECtMXDto/X7ybn7eUQ4E2pusVu M5i4AgUAfjTlkiDNgovFMnIdlVNDubFMMWfsP1Bf5W+6S
+	aQXcFLSGGeR opkM9oaB7GDTnWDDz79X6Gx/7dL4K8PDMlOTAMgEp0GhbEiDuYKyjKD8 k9E=
+	nsatc.net.		86400	IN	NS	de-1.ns.nsatc.net.
+	nsatc.net.		86400	IN	NS	es-1.ns.nsatc.net.
+	nsatc.net.		86400	IN	NS	b.ns.nsatc.net.
+	nsatc.net.		86400	IN	NS	nl-1.ns.nsatc.net.
+	nsatc.net.		86400	IN	NS	uk-1.ns.nsatc.net.
+	johle727@li4-7:~$ 
+
+
+	
+
