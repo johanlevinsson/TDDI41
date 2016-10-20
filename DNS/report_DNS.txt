@@ -99,6 +99,8 @@ a) Why is there no answer in the first query but in the second query.
 
 b) Both answers are correct, even though they differ. Explain why.
 
+           
+
 3-1 Use host to find out which name servers are authoritative for the zone adlibris.se. Which organization(s) operate them.
 	
 	johle727@li4-7:~$ host -t NS adlibris.se
@@ -119,10 +121,10 @@ b) Both answers are correct, even though they differ. Explain why.
 	sysinst.ida.liu.se.	294	IN	NS	sysinst-gw.ida.liu.se.
 
 
-	johle727@li4-7:~$ host -a sysinst.ida.liu.se | grep "^sysinst" | wc -l
+ johle727@li4-7:~$ host -a sysinst.ida.liu.se | grep "^sysinst" | wc -l
 	4
 
-	There are records. 
+	qThere are records. 
 
 3-3 Use host to find out all information you can about the name ida.liu.se (i.e. the name itself, not the contents of the zone). What did you find out? How can you be sure that is all the information that is available.
 
@@ -277,4 +279,6 @@ b) What nameservers are consulted when determining the address of update.microso
 
 
 	
+Part 2: Nameserver configuration
+
 

@@ -1,0 +1,28 @@
+Set maximum cache size so that it can fit in memory all the best way
+to figure out max cache size is to watch it in action.
+
+configuration files
+
+/etc/bind/named.conf                   is the main configuration file for the dns file
+
+/etc/bind/named.conf.default-zones     forward reverse and broadcast zones
+
+/etc/bind/named.conf.options           configuration options for the DNS server
+
+/etc/bind/named.conf.local	       local dns server configuration. This is were zones are declared 
+
+/etc/bind/named.conf.log               file that needs to be created in jessie (not wheezy?)
+
+
+
+* /etc/bind/named.conf
+allow-query { any; };					# allow authorative from any
+allow-recursion { 127.0.0.1; 130.236.178.216/29; };     # allow recursive from local ip's
+allow-transfer { none; };    			 	# do not allow zone transfers
+#forwarders { 0.0.0.0; }; 	       			# forward recursive queries to
+
+zone "c4.sysinst.ida.liu.se" {
+        type master;
+        file "standard/localhost";
+        allow-transfer { localhost; };
+};
