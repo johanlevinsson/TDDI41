@@ -1,6 +1,17 @@
+##################
+##Done on server##
+##################
 
 In Router:
 *********
+
+installed packages
+******************************
+gw$ apt-get install openssh-server
+gw$ apt-get install less
+gw$ apt-get install telnet
+
+
 
 Edit hostnames
 ******************
@@ -57,11 +68,7 @@ added key
 ************
 gw$ apt-key adv --keyserver keyserver.ubuntu.com --recv-keys 8B48AD6246925553
 
-installed packages
-******************************
-gw$ apt-get install openssh-server
-gw$ apt-get install less
-gw$ apt-get install telnet
+
 
 ##########################
 ###Quagga configuration###
