@@ -1,0 +1,13 @@
+c4.sysinst.ida.liu.se.		86400  IN SOA server.c4.sysinst.ida.liu.se. eripe320.student.liu.se. (
+1
+10800
+3600
+6044800
+86400 )
+
+				86400	IN NS server.sysinst.ida.liu.se. 
+
+gw.c4.sysinst.ida.liu.se. 	86400	IN A  130.236.178.218
+server.c4.sysinst.ida.liu.se.	86400	IN A  130.236.178.219
+client-1.c4.sysinst.ida.liu.se. 86400   IN A  130.236.178.220
+client-2.c4.sysinst.ida.liu.se. 86400   IN A  130.236.178.221
