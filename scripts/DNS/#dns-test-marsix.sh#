@@ -1,0 +1,28 @@
+# test that verify that the system meets the following criteria
+
+5-1 Install a DNS server on your server and configure it to meet the
+following requirements.
+
+a) It must respond authoritatively to all non-recursive queries for
+names in the zones you are authoritative for.
+
+b) It must respond to all recursive queries from the hosts on your own
+network.
+
+c) It must not respond to any recursive queries from any outside host
+(i.e. host not on your own network).
+
+d) Apart from the queries in (a), it should not respond to any queries
+from any outside host.
+
+e) It must contain valid zone data for your zone(s).
+
+f) The cache parameters must be chosen sensibly (i.e. you are expected
+to be able to motivate your choice).
+
+g) It must not be susceptible to the standard cache poisoning
+attacks. See http:www.kb.cert.org/vuls/id/800113 for details. Test
+your DNS server using porttest.dns-oarc.net (see
+http:www.dns-oarc.net/oarc/services/porttest).
+
+5-2 Install zone data for your normal zone.
