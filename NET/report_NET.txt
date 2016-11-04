@@ -133,6 +133,9 @@ c) What does the "search" keyword in the resolver configuration file do.
 8-2 What configuration files does the Debian installation of Quagga use.
 
 	/etc/quagga/debian.conf
+	/etc/quagga/daemons
+	/etc/quagga/ripd.conf
+	/etc/quagga/zebra.conf
 
 8-3 How do you configure Quagga interactively? When configuring interactively, how do you save the current configuration to file.
 
