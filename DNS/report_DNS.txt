@@ -38,7 +38,7 @@ e) What is a resource record? What does a resource record consist of.
 
 f) DNS messages contain answer, authority and additional sections. What is the purpose of each section.
 
-	The authority ection contains records of othe rauthoritative servers. The answer sections contains resource
+	The authority section contains records of othe rauthoritative servers. The answer sections contains resource
 	records for the name that was queried. The additional section could contain, for example in an MX query it
 	could hold the hostname of a mail server. 
 
@@ -95,7 +95,7 @@ c) What is the address of liu.se.
 
 a) Why is there no answer in the first query but in the second query.
 
-	dns.liu.se is, and ns3.liu.se isn't in the same zone as ida.liu.se
+	ns3.liu.se doesn't hold any DNS records and thus doesn't respond. 
 
 b) Both answers are correct, even though they differ. Explain why.
 
@@ -278,7 +278,6 @@ b) What nameservers are consulted when determining the address of update.microso
 	johle727@li4-7:~$ 
 
 
-	
-Part 2: Nameserver configuration
+	https://github.com/johanlevinsson/TDDI41.git
 
 

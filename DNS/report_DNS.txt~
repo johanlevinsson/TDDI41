@@ -16,14 +16,14 @@ b) What is the difference between a domain and a zone.
 	
 	A domain is a namespace that contains all the machines under of an organization's domain name. Unless there
 	are any subdomains, a zone is practically equal to the domain. Thus one authorative DNS server manages all 
-	machines in that domain. Should a subdomain be specified, the zone becomes the the domain and all subdomains. 
+	machines in that domain. Should a subdomain be specified, the zone becomes the the domain and all 	
+	subdomains. 
 
 c) What is the difference between a recursive and a non-recursive query in DNS? When is each type of query used.
 
-	In a non recursive query, the local dns makes one query each and sequentially to the Root DNS server, top DNS
-	server and authorative DNS server. In a recursive query, the local DNS server makes a query to the root DNS
-	server which is forwarded to the top and then to the authorative. The reply takes the same route back to the 
-	local DNS server. 
+	In a non recursive query, the local dns makes one query each and sequentially to the Root DNS server, top 
+	DNS server and authorative DNS server. In a recursive query, the local DNS server makes a query to the root 		DNS server which is forwarded to the top and then to the authorative. The reply takes the same route back
+	to the local DNS server. 
 
 d) What is the purpose of delegation in DNS.
 
@@ -31,9 +31,8 @@ d) What is the purpose of delegation in DNS.
 
 e) What is a resource record? What does a resource record consist of.
 
-	It's the row that maps the IP adress to a hostname. That's type A. If it's a type NS, it will redirect to the
-	next DNS server, providing the IP address of the correct authorative DNS server. There's also C-name that's
-	an alias so you can for example shorten long hostnames. MX is a mail server alias. 
+	It's the row that maps the IP adress to a hostname. That's type A. If it's a type NS, it will redirect to 	  the next DNS server, providing the IP address of the correct authorative DNS server. There's also C-name
+	that's an alias so you can for example shorten long hostnames. MX is a mail server alias. 
 
 	It consits of a hostname, value (ip address or hostname alias), type, ttl. 
 
@@ -96,9 +95,11 @@ c) What is the address of liu.se.
 
 a) Why is there no answer in the first query but in the second query.
 
-	dns.liu.se is, and ns3.liu.se isn't in the same zone as ida.liu.se
+	ns3.liu.se doesn't hold any DNS records and thus doesn't respond. 
 
 b) Both answers are correct, even though they differ. Explain why.
+
+           
 
 3-1 Use host to find out which name servers are authoritative for the zone adlibris.se. Which organization(s) operate them.
 	
@@ -120,10 +121,10 @@ b) Both answers are correct, even though they differ. Explain why.
 	sysinst.ida.liu.se.	294	IN	NS	sysinst-gw.ida.liu.se.
 
 
-	johle727@li4-7:~$ host -a sysinst.ida.liu.se | grep "^sysinst" | wc -l
+ johle727@li4-7:~$ host -a sysinst.ida.liu.se | grep "^sysinst" | wc -l
 	4
 
-	There are records. 
+	qThere are records. 
 
 3-3 Use host to find out all information you can about the name ida.liu.se (i.e. the name itself, not the contents of the zone). What did you find out? How can you be sure that is all the information that is available.
 
@@ -277,5 +278,6 @@ b) What nameservers are consulted when determining the address of update.microso
 	johle727@li4-7:~$ 
 
 
-	
+	https://github.com/johanlevinsson/TDDI41.git
+
 

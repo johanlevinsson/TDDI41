@@ -154,45 +154,82 @@ c) What does the "search" keyword in the resolver configuration file do.
 	router. 
 10 The output of show ip rip and show ip rip status, and the current routing table.
 
-	ripd# show ip rip       
-	Codes: R - RIP, C - connected, S - Static, O - OSPF, B - BGP
-	Sub-codes:
-	      (n) - normal, (s) - static, (d) - default, (r) - redistribute,
-	      (i) - interface
 
-	     Network            Next Hop         Metric From            Tag Time
-	R(n) 0.0.0.0/0          130.236.178.1         2 130.236.178.1     0 02:38
-	C(i) 130.236.178.0/24   0.0.0.0               1 self              0
-	R(n) 130.236.178.136/29 130.236.178.15        2 130.236.178.15    0 02:31
-	R(n) 130.236.178.168/29 130.236.178.19        2 130.236.178.19    0 02:38
-	C(i) 130.236.178.216/29 0.0.0.0               1 self              0
-	R(n) 130.236.179.80/29  130.236.178.32        2 130.236.178.32    0 02:52
-	R(n) 130.236.179.144/29 130.236.178.40        2 130.236.178.40    0 02:46
+ripd> show ip rip
+Codes: R - RIP, C - connected, S - Static, O - OSPF, B - BGP
+Sub-codes:
+      (n) - normal, (s) - static, (d) - default, (r) - redistribute,
+      (i) - interface
 
+     Network            Next Hop         Metric From            Tag Time
+R(n) 0.0.0.0/0          130.236.178.1         2 130.236.178.1     0 02:39
+C(i) 130.236.178.0/24   0.0.0.0               1 self              0
+R(n) 130.236.178.72/29  130.236.178.7         2 130.236.178.7     0 01:55
+R(n) 130.236.178.136/29 130.236.178.15        2 130.236.178.15    0 02:41
+R(n) 130.236.178.152/29 130.236.178.17        2 130.236.178.17    0 02:48
+R(n) 130.236.178.168/29 130.236.178.19        2 130.236.178.19    0 02:51
+R(n) 130.236.178.176/29 130.236.178.20        2 130.236.178.20    0 02:51
+R(n) 130.236.178.184/29 130.236.178.21        2 130.236.178.21    0 02:50
+R(n) 130.236.178.200/29 130.236.178.23        2 130.236.178.23    0 02:44
+C(r) 130.236.178.216/29 0.0.0.0               1 self (connected:1)  0
+R(n) 130.236.178.240/29 130.236.178.28        2 130.236.178.28    0 02:50
+R(n) 130.236.179.72/29  130.236.178.31        2 130.236.178.31    0 02:52
+R(n) 130.236.179.80/29  130.236.178.32        2 130.236.178.32    0 02:38
+R(n) 130.236.179.120/29 130.236.178.37        2 130.236.178.37    0 02:33
+R(n) 130.236.179.144/29 130.236.178.40        2 130.236.178.40    0 02:26
+R(n) 130.236.179.200/29 130.236.178.47        2 130.236.178.47    0 02:46
 
-	ripd> show ip rip status
-	Routing Protocol is "rip"
-	  Sending updates every 30 seconds with +/-50%, next due in 1 seconds
-	  Timeout after 180 seconds, garbage collect after 120 seconds
-	  Outgoing update filter list for all interface is not set
-	  Incoming update filter list for all interface is not set
-	  Default redistribution metric is 1
-	  Redistributing:
-	  Default version control: send version 2, receive version 2 
-	    Interface        Send  Recv   Key-chain
-	    eth0             2     2      
-	    eth1             2     2      
-	  Routing for Networks:
-	    130.236.178.216/29
-	    eth1
-	  Routing Information Sources:
-	    Gateway          BadPackets BadRoutes  Distance Last Update
-	    130.236.178.19           0         0       120   00:00:10
-	    130.236.178.32           0         0       120   00:00:16
-	    130.236.178.40           0         0       120   00:00:17
-	    130.236.178.15           0         0       120   00:00:12
-	    130.236.178.1            0         0       120   00:00:17
-	  Distance: (default is 120)
+ripd> show ip rip status
+Routing Protocol is "rip"
+  Sending updates every 30 seconds with +/-50%, next due in 18 seconds
+  Timeout after 180 seconds, garbage collect after 120 seconds
+  Outgoing update filter list for all interface is not set
+  Incoming update filter list for all interface is not set
+  Default redistribution metric is 1
+  Redistributing: connected static
+  Default version control: send version 2, receive version 2 
+    Interface        Send  Recv   Key-chain
+    eth1             2     2      
+  Routing for Networks:
+    eth1
+  Routing Information Sources:
+    Gateway          BadPackets BadRoutes  Distance Last Update
+    130.236.178.28           0         0       120   00:00:28
+    130.236.178.47           0         0       120   00:00:09
+    130.236.178.7            0         0       120   00:01:23
+    130.236.178.15           0         0       120   00:00:09
+    130.236.178.21           0         0       120   00:00:28
+    130.236.178.37           0         0       120   00:00:12
+    130.236.178.23           0         0       120   00:00:03
+    130.236.178.1            0         0       120   00:00:14
+    130.236.178.40           0         0       120   00:00:14
+    130.236.178.32           0         0       120   00:00:02
+    130.236.178.17           0         0       120   00:00:30
+    130.236.178.20           0         0       120   00:00:27
+    130.236.178.19           0         0       120   00:00:02
+    130.236.178.31           0         0       120   00:00:25
+  Distance: (default is 120)
+
+	root@gw:~# route
+	Kernel IP routing table
+	Destination     Gateway         Genmask         Flags Metric Ref    Use Iface
+	130.236.178.136 b2-gw.sysinst.i 255.255.255.248 UG    2      0        0 eth1
+	130.236.178.152 b4-gw.sysinst.i 255.255.255.248 UG    2      0        0 eth1
+	130.236.179.144 130.236.178.40  255.255.255.248 UG    2      0        0 eth1
+	130.236.178.168 b6-gw.sysinst.i 255.255.255.248 UG    2      0        0 eth1
+	130.236.178.184 b8-gw.sysinst.i 255.255.255.248 UG    2      0        0 eth1
+	130.236.178.176 b7-gw.sysinst.i 255.255.255.248 UG    2      0        0 eth1
+	130.236.178.200 c2-gw.sysinst.i 255.255.255.248 UG    2      0        0 eth1
+	130.236.178.72  a2-gw.sysinst.i 255.255.255.248 UG    2      0        0 eth1
+	130.236.179.72  130.236.178.31  255.255.255.248 UG    2      0        0 eth1
+	130.236.179.200 130.236.178.47  255.255.255.248 UG    2      0        0 eth1
+	130.236.179.80  130.236.178.32  255.255.255.248 UG    2      0        0 eth1
+	130.236.178.216 *               255.255.255.248 U     0      0        0 eth0
+	130.236.179.120 130.236.178.37  255.255.255.248 UG    2      0        0 eth1
+	130.236.178.240 c7-gw.sysinst.i 255.255.255.248 UG    2      0        0 eth1
+	130.236.178.0   *               255.255.255.0   U     0      0        0 eth1
+	default         ida-gw.sysinst. 0.0.0.0         UG    0      0        0 eth1
+
 
 5BV7qyQ6
 

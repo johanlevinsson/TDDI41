@@ -57,7 +57,7 @@ a) How do you set the address of interface eth0 to 130.236.189.14/24 (netmask 25
 	ifconfig eth0 netmask 255.255.255.0
 
 
-	ip adress add 130.236.189.14/24 dev eth0
+	ip address add 130.236.189.14/24 dev eth0
 
 b) How do you display the current routing table using route? How do you display it using ip? Using netstat.
 
