@@ -16,13 +16,70 @@ configuration files
 
 
 * /etc/bind/named.conf
+***********************
 allow-query { any; };					# allow authorative from any
 allow-recursion { 127.0.0.1; 130.236.178.216/29; };     # allow recursive from local ip's
 allow-transfer { none; };    			 	# do not allow zone transfers
 #forwarders { 0.0.0.0; }; 	       			# forward recursive queries to
 
-zone "c4.sysinst.ida.liu.se" {
-        type master;
-        file "standard/localhost";
-        allow-transfer { localhost; };
+*/etc/bind/named.conf.local
+***************************
+
+zone "c4.sysinst.ida.liu.se" #eventuellt 130.236.178.25#
+{
+	type master
+	file "/etc/bind/db.c4.sysinst.ida.liu.se";
 };
+
+zone "178.236.130.in-addr.arpa" {
+	type master;
+        file "etc/bind/db.178.236.130";
+};
+
+include "/etc/bind/named.conf.default-zones";
+include "/etc/bind/named.conf.local";
+
+* /etc/bind/named.conf.default-zones
+************************************
+
+zone "localhost" {
+	type master;
+	file "/etc/bind/db.local";
+};
+
+
+
+* /etc/bind/db.c4.sysinst.ida.liu.se
+*************************************
+#			    TTL     class  rr     Nameserver                     email adress
+c4.sysinst.ida.liu.se.      86400   IN     SOA    server.c4.sysinst.ida.liu.se.  eripe320.student.liu.se. ( 
+1  
+10800 
+3600 
+6044800 
+86400 )
+                	    86400   IN NS   server.c4.sysinst.ida.liu.se.
+
+gw.c4.sysinst.ida.liu.se.          86400   IN   A    130.236.178.218
+server.c4.sysinst.ida.liu.se.      86400   IN   A    130.236.178.219
+client-1.c4.sysinst.ida.liu.se.    86400   IN   A    130.236.178.220
+client-2.c4.sysinst.ida.liu.se.    86400   IN   A    130.236.178.221
+
+
+
+
+
+*/etc/bind/db.130.236.178.in-addr.arpa.
+****************************************
+178.236.130.in-addr.arpa. 86400   IN SOA  server.c4.sysinst.ida.liu.se. eripe320.student.liu.se ( 
+1 
+10800 
+3600 
+6044800 
+86400 )
+                       86400   IN NS   dns.domain.lan.
+
+218.178.236.130.in-addr.arpa.    86400   IN   PTR   gw.c4.sysinst.ida.liu.se.
+219.178.236.130.in-addr.arpa.    86400   IN   PTR   server.c4.sysinst.ida.liu.se.
+220.178.236.130.in-addr.arpa.    86400   IN   PTR   client-1.c4.sysinst.ida.liu.se.
+221.178.236.130.in-addr.arpa.    86400   IN   PTR   client-2.c4.sysinst.ida.liu.se.
