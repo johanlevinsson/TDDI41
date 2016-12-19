@@ -1,0 +1,15 @@
+#!/bin/bash
+
+# Script that:
+
+# 1.Calculate a unique username for the user
+
+# 2.Add the user to the system
+
+# 3.Generate a random password for the user
+
+# 4. Create the user's home directory and copy standard files to it.
+
+# 5. Configure any services that need to be configured
+
+# 6. Output the username and password on a single line
