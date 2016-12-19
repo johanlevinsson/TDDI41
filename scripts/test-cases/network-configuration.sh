@@ -1,4 +1,4 @@
-#!/bin/sh
+#!/bin/bash
 
 # ID:
 # Purpose:
@@ -34,7 +34,7 @@ PREFIXES=$(route | grep eth0 |  grep '*')
 if [[ -z $PREFIXES ]]; then
     printf "ERROR: network prefix not distributed\n"
 else
-    printf "Sucess:\n$PREFIXES"
+    printf "Sucess:\n$PREFIXES "
 fi
 
 
