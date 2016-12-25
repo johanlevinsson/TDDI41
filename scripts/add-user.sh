@@ -18,16 +18,14 @@ USER_NUM=$(cut -d: -f1 /etc/passwd | grep memer | tail -1 | tr -cd '[[:digit:]]'
 printf $USER_NUM
 
 if [ -z "$USER_NUM" ]; then
-    printf "adding user memer\n";
-    useradd memer1;
+    NEXT_USER="memer1"
 else
-    printf "User exists"
-    exit
+    NEXT_USER=$((USER_NUM + 1))
+    NEW_USER="memer$NEXT_USER"
 fi
 
 # Calculate username and create user
-NEXT_USER=$((USER_NUM + 1))
-NEW_USER="memer$NEXT_USER"
+
 adduser --home /home.1/$NEW_USER $NEW_USER
 
 # Generate and set password
@@ -35,15 +33,15 @@ PASSWORD=$(openssl rand -base64 8)
 passwd $NEW_USER $PASSWORD
 
 # Add home-folder to autofs
-echo "memeboy -fstype=nfs,vers=3 server.c4.sysinst.ida.liu.se:/home.1/&" >> /etc/auto.home
+echo "$NEW_USER -fstype=nfs,vers=3 server.c4.sysinst.ida.liu.se:/home.1/&" >> /etc/auto.home
 
 #Update nis maps
 make -C /var/yp/
 
 #Print info
-printf "User $NEW_USER added with password: $PASSWORD"
+printf "User: $NEW_USER added with password: $PASSWORD"
 
-mkdir ~/$NEW_USER
+
 
 
 
