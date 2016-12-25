@@ -30,7 +30,7 @@ adduser --home /home.1/$NEW_USER --disabled-password --gecos "" $NEW_USER
 
 # Generate and set password
 PASSWORD=$(openssl rand -base64 8)
-echo "$PASSWD" | passwd "$NEW_USER" --stdin
+echo "$:NEW_USER:$PASSWD" | chpasswd
 
 
 # Add home-folder to autofs
