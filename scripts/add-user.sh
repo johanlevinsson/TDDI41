@@ -26,11 +26,12 @@ fi
 
 # Calculate username and create user
 
-adduser --home /home.1/$NEW_USER $NEW_USER
+adduser --home /home.1/$NEW_USER --disabled-password --gecos "" $NEW_USER
 
 # Generate and set password
 PASSWORD=$(openssl rand -base64 8)
-passwd $NEW_USER $PASSWORD
+echo "$PASSWD" | passwd "$NEW_USER" --stdin
+
 
 # Add home-folder to autofs
 echo "$NEW_USER -fstype=nfs,vers=3 server.c4.sysinst.ida.liu.se:/home.1/&" >> /etc/auto.home
