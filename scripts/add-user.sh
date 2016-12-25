@@ -22,14 +22,26 @@ if [ -z "$USER_NUM" ]; then
     useradd memer1;
 else
     printf "User exists"
+    exit
 fi
 
+# Calculate username and create user
 NEXT_USER=$((USER_NUM + 1))
 NEW_USER="memer$NEXT_USER"
-useradd $NEW_USER
+adduser --home /home.1/$NEW_USER $NEW_USER
 
+# Generate and set password
 PASSWORD=$(openssl rand -base64 8)
 passwd $NEW_USER $PASSWORD
+
+# Add home-folder to autofs
+echo "memeboy -fstype=nfs,vers=3 server.c4.sysinst.ida.liu.se:/home.1/&" >> /etc/auto.home
+
+#Update nis maps
+make -C /var/yp/
+
+#Print info
+printf "User $NEW_USER added with password: $PASSWORD"
 
 mkdir ~/$NEW_USER
 
