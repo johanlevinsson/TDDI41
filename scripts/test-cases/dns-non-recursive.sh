@@ -34,12 +34,12 @@ if [ "$CLIENT1" == "130.236.178.220" ]; then
 fi
 
 if [ "$CLIENT2" == "130.236.178.221" ]; then
-    CLIENT1=okey
+    CLIENT2=okey
     echo "Non recursive query client-2 okey"
 fi
 
 if [ "$SERVER" == "130.236.178.219" ]; then
-    CLIENT1=okey
+    SERVER=okey
     echo "Non recursive query server okey"
 fi
 if [ "$ROUTER" == "130.236.178.218" ]; then
