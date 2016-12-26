@@ -15,13 +15,13 @@ function print_test {
     padlength=40
     pad=$(printf '%0.1s' "-"{1..60})
     if [ "$RESULT" == "okey" ]; then
-	printf '%s' "$TEST_NAME"
-	printf '%*.*s' 0 $((padlength - ${#TEST_NAME} )) "$pad"
-	printf "[\e[1m\e[92mOK\e[0m]\n"  
+	echo '%s' "$TEST_NAME"
+	echo '%*.*s' 0 $((padlength - ${#TEST_NAME} )) "$pad"
+	echo "[\e[1m\e[92mOK\e[0m]\n"  
     else
-	printf '%s' "$TEST_NAME"
-	printf '%*.*s' 0 $((padlength - ${#TEST_NAME} )) "$pad"
-	printf "[\e[1m\e[31mFAIL\e[0m]\n"
+	echo '%s' "$TEST_NAME"
+	echo '%*.*s' 0 $((padlength - ${#TEST_NAME} )) "$pad"
+	echo "[\e[1m\e[31mFAIL\e[0m]\n"
     fi
 }
 
@@ -38,8 +38,8 @@ if [ "$IP_ADRESS" == "130.236.178.218" ] && [ "$HOSTNAME" == "gw" ]; then
     EXTERNAL_ADRESS=$(ifconfig eth1 | awk '/inet addr/{print substr($2,6)}')
     echo "#$EXTERNAL_ADRESS#"
     if [ "$EXTERNAL_ADRESS" == "130.236.178.25" ]; then
-	printf "Basic network connectivity on $HOSTNAME correct\n"
-	printf "eth0 ip: $IP_ADRESS eth1 ip: $EXTERNAL_IP hostname: $HOSTNAME\n"
+	echo "Basic network connectivity on $HOSTNAME correct\n"
+	echo "eth0 ip: $IP_ADRESS eth1 ip: $EXTERNAL_IP hostname: $HOSTNAME\n"
 	TEST_RESULT=okey
     else
 	TEST_result=fail
@@ -48,20 +48,20 @@ if [ "$IP_ADRESS" == "130.236.178.218" ] && [ "$HOSTNAME" == "gw" ]; then
 else
     if [ "$IP_ADRESS" == "130.236.178.219" ] && [ "$HOSTNAME" == "server" ]; then
 	TEST_RESULT=okey
-	printf "Basic network connectivity on $HOSTNAME correct\n"
-	printf "eth0 ip: $IP_ADRESS hostname: $HOSTNAME\n"
+	echo "Basic network connectivity on $HOSTNAME correct\n"
+	echo "eth0 ip: $IP_ADRESS hostname: $HOSTNAME\n"
     elif [ "$IP_ADRESS" == "130.236.178.220" ] && [ "$HOSTNAME" == "client_1" ]; then
 	TEST_RESULT=okey
-	printf "Basic network connectivity on $HOSTNAME correct\n"
-	printf "eth0 ip: $IP_ADRESS hostname: $HOSTNAME\n"
+	echo "Basic network connectivity on $HOSTNAME correct\n"
+	echo "eth0 ip: $IP_ADRESS hostname: $HOSTNAME\n"
     elif [ "$IP_ADRESS" == "130.236.178.221" ] && [ "$HOSTNAME" == "client_2" ]; then
 	TEST_RESULT=okey
-	printf "Basic network connectivity on $HOSTNAME correct\n"
-	printf "eth0 ip: $IP_ADRESS hostname: $HOSTNAME\n"
+	echo "Basic network connectivity on $HOSTNAME correct\n"
+	echo "eth0 ip: $IP_ADRESS hostname: $HOSTNAME\n"
     else
 	TEST_RESULT=fail
-	printf "Hostname ip addres on $HOSTNAME failed due to hostname-ip missmatch\n"
-	printf "eth0 ip: $IP_ADRESS hostname: $HOSTNAME\n"
+	echo "Hostname ip addres on $HOSTNAME failed due to hostname-ip missmatch\n"
+	echo "eth0 ip: $IP_ADRESS hostname: $HOSTNAME\n"
 	
     fi
 fi
@@ -77,7 +77,7 @@ print_test "Basic network" $TEST_RESULT
 PING=$(ping -c 1 -n www.google.se | grep '0% packet loss')
 if [[ -z $PING ]] ; then
     TEST_RESULT=fail
-    printf "Ping -c 1 www.google.com resulted in a non 0% package loss"
+    echo "Ping -c 1 www.google.com resulted in a non 0% package loss"
 
 else
     TEST_RESULT=okey
