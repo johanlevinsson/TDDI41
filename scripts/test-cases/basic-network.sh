@@ -30,7 +30,7 @@
 # Test hostname and ip: compare hostname with ip
 
 HOSTNAME=$(hostname)
-echo $HOSTNAME
+
 exec 3>&1 4>&2 1>"basic-network-$HOSTNAME.log" 2>&1
 IP_ADRESS=$(ifconfig eth0 | awk '/inet addr/{print substr($2,6)}')
 echo "#$IP_ADRESS#"

@@ -20,11 +20,11 @@ function print_test {
     if [ "$RESULT" == "okey" ]; then
         printf '%s' "$TEST_NAME"
         printf '%*.*s' 0 $((padlength - ${#TEST_NAME} )) "$pad"
-        printf "[\e[1m\e[92mOK\e[0m]\n"  
+        printf "[\e[1m\e[92mOK\e[0m]"  
     else
         printf '%s' "$TEST_NAME"
         printf '%*.*s' 0 $((padlength - ${#TEST_NAME} )) "$pad"
-        printf "[\e[1m\e[31mFAIL\e[0m]\n"
+        printf "[\e[1m\e[31mFAIL\e[0m]"
     fi
 }
 
