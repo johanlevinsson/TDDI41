@@ -21,28 +21,28 @@
 #     fi
 # }
 
-exec 3>&1 4>&2 1>"dns-non-recursive-$HOSTNAME.log" 2>&1
+exec 3>&1 4>&2 1>"dns-reverse-$HOSTNAME.log" 2>&1
 
-CLIENT1=$(dig +short client-1.c4.sysinst.ida.liu.se @server.c4.sysinst.ida.liu.se)
-CLIENT2=$(dig +short client-2.c4.sysinst.ida.liu.se @server.c4.sysinst.ida.liu.se)
-SERVER=$(dig +short server.c4.sysinst.ida.liu.se @server.c4.sysinst.ida.liu.se)
-ROUTER=$(dig +short gw.c4.sysinst.ida.liu.se @server.c4.sysinst.ida.liu.se)
+CLIENT1=$(dig -x 130.236.178.220 +short)
+CLIENT2=$(dig -x 130.236.178.221 +short)
+SERVER=$(dig -x 130.236.178.219 +short)
+ROUTER=$(dig -x 130.236.178.218 +short)
 
-if [ "$CLIENT1" == "130.236.178.220" ]; then
+if [ "$CLIENT1" == "220.216/29.178.236.130.in-addr.arpa." ]; then
     CLIENT1=okey
     echo "Non recursive query client-1 okey"
 fi
 
-if [ "$CLIENT2" == "130.236.178.221" ]; then
+if [ "$CLIENT2" == "221.216/29.178.236.130.in-addr.arpa." ]; then
     CLIENT2=okey
     echo "Non recursive query client-2 okey"
 fi
 
-if [ "$SERVER" == "130.236.178.219" ]; then
+if [ "$SERVER" == "219.216/29.178.236.130.in-addr.arpa." ]; then
     SERVER=okey
     echo "Non recursive query server okey"
 fi
-if [ "$ROUTER" == "130.236.178.218" ]; then
+if [ "$ROUTER" == "218.216/29.178.236.130.in-addr.arpa." ]; then
     ROUTER=okey
     echo "Non recursive query gw okey"
 fi
@@ -50,12 +50,12 @@ fi
 exec 1>&3 2>&4
 echo >&2
 
-print_test "Non recursive DNS gw" "$ROUTER"
+print_test "Reverse  DNS gw" "$ROUTER"
 printf "\n"
-print_test "Non recursive DNS server" "$SERVER"
+print_test "Reverse DNS server" "$SERVER"
 printf "\n"
-print_test "Non recursive DNS client-1" "$CLIENT1"
+print_test "Reverse DNS client-1" "$CLIENT1"
 printf "\n"
-print_test "Non recursive DNS client-2" "$CLIENT2"
+print_test "Reverse DNS client-2" "$CLIENT2"
 printf "\n"
 # Expected results:

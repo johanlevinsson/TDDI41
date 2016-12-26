@@ -32,6 +32,7 @@ function print_test {
 printf "runnig local scripts on marsix \n"
 source ./dns-recursive.sh
 source ./dns-non-recursive.sh
+source ./dns-reverse.sh
 
 printf "Running remote tests on router: \n"
 ssh root@gw.c4.sysinst.ida.liu.se 'bash -s' < ./master-router.sh
