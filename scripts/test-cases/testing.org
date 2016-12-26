@@ -1,9 +1,15 @@
+5BV7qyQ6
+
+J4Czzqoj
+
 *** /etc/hostname
 **** gw
 **** server
 **** client-1
 **** client-2 
 
+     
+* TODO write function for testing subscripts
 
 * networking
 
@@ -23,12 +29,11 @@ The network consists of the following machines
 **** gw
 gw
 **** server
-server
+     server
 **** client-1
 client-1
 **** client-2
 client-2 
-
 
 *** /etc/hosts
 **** gw
@@ -45,29 +50,1427 @@ client-2
 **** client-2 
 130.236.178.221 client-2.c4.sysinst.ida.liu.se
      
-
 *** /etc/network/interfaces
 **** gw
+auto lo
+iface lo inet loopback
+auto eth0
+iface eth0 inet static
+        address 130.236.178.218
+        netmask 255.255.255.248
+auto eth1
+iface eth1 inet static
+        address 130.236.178.25
+        netmask 255.255.255.0
+        gateway 130.236.178.1
+
 **** server
+auto lo
+iface lo inet loopback
+auto eth0
+iface eth0 inet static
+        address 130.236.178.220
+        netmask 255.255.255.248
+        gateway 130.236.178.218
 **** client-1
+auto lo
+iface lo inet loopback
+auto eth0
+iface eth0 inet static
+        address 130.236.178.220
+        netmask 255.255.255.248
+        gateway 130.236.178.218
+
 **** client-2 
+auto lo
+iface lo inet loopback
+auto eth0
+iface eth0 inet static
+        address 130.236.178.221
+        netmask 255.255.255.248
+        gateway 130.236.178.218
+
+*** /etc/apt/sources.list
+deb http://ftp.se.debian.org/debian wheezy main
+
+*** /etc/resolv.conf
+domain ida.liu.se
+search ida.liu.se
+nameserver 130.236.186.13
+nameserver 130.236.186.16
+
+*** /etc/nsswitch.conf
+
+*** /etc/hosts
+127.0.0.1       localhost
+::1     ip6-localhost ip6-loopback
+fe00::0 ip6-localnet
+ff00::0 ip6-mcastprefix
+ff02::1 ip6-allnodes
+ff02::2 ip6-allrouters
+ff02::3 ip6-allhosts
+130.236.178.219 server.c4.sysinst.ida.liu.se server
+130.236.178.220 client-1.c4.sysinst.ida.liu.se client-1
+130.236.178.221 client-2.c4.sysinst.ida.liu.se client-2
 
 
-** TODO Test hostname
+Master script runs the following scripts on all machines
+
+** TODO Test hostname and ip configuration
 
 run the command hostname and compare it to a table of ip-adresses that
-mach our hostnames
+mach our hostnames and greps the ip adress and compares it to
+hostnames. If both match hostname can be used for the following tests
 
 server 1
 
-** TODO Test ip-configuration
 
-The opposite way around, test ip-addresses match a table of hostnames
+If the hostname configuration is correct the the followint scripts
+will be run all machines
+
+** TODO Test name resolution
+
+ping 
+
+
+And the following on the router
 
 ** TODO Test default gateway 
 
 Compare default gateway to ip-address
 
-** TODO Test name resolution
 
-ping 
+And the following on the server
+
+
+
+* DNS
+
+** Configuration file content
+*** server:/etc/bind/db.130.236.178.in-addr.arpa done
+$TTL 30 
+
+@  IN SOA server.c4.sysinst.ida.liu.se. eripe320.student.liu.se. (
+200001
+30
+30
+30
+30
+ )
+@                             IN NS  server.c4.sysinst.ida.liu.se.
+
+218  IN PTR gw.c4.sysinst.ida.liu.se.
+219  IN PTR server.c4.sysinst.ida.liu.se.
+220  IN PTR client-1.c4.sysinst.ida.liu.se.
+221  IN PTR client-2.c4.sysinst.ida.liu.se. 
+
+****
+
+*** server:/etc/bind/db.255 done
+;
+; BIND reverse data file for broadcast zone
+;
+$TTL    604800
+@       IN      SOA     localhost. root.localhost. (
+                                141101          ; Serial
+                                30              ; Refresh
+                                30              ; Retry
+                                30              ; Expire
+                                30 )            ; Negative Cache TTL
+;
+@       IN      NS      localhost.
+
+*** server:/etc/bind/db.c4.sysinst.ida.liu.se done
+$TTL 30
+
+@  IN SOA server.c4.sysinst.ida.liu.se. eripe320.student.liu.se. (
+200001
+30
+30
+30
+30 )
+
+@               IN NS server.c4.sysinst.ida.liu.se. 
+
+gw      IN A  130.236.178.218
+server  IN A  130.236.178.219
+client-1 IN A  130.236.178.220
+client-2 IN A  130.236.178.221
+
+*** server:/etc/bind/named.conf done
+
+// This is the primary configuration file for the BIND DNS server named.
+//
+// Please read /usr/share/doc/bind9/README.Debian.gz for information on the 
+// structure of BIND configuration files in Debian, *BEFORE* you customize 
+// this configuration file.
+//
+// If you are just adding zones, please do that in /etc/bind/named.conf.local
+
+include "/etc/bind/named.conf.options";
+include "/etc/bind/named.conf.local";
+include "/etc/bind/named.conf.default-zones";
+
+
+
+# provide a reverse mapping for the loopback adress 127.0.0.1
+#zone "0.0.127.in-addr.arpa" {
+#       type master
+#       file "localhost.rev" # PROBABLY SUPER WRONG
+
+#disable rndc commands
+#controls { };
+
+#enable rndc commands
+#controls {
+ #   inet 127.0.0.1 port 953 allow { 127.0.0.1; };
+#};
+
+*** server:/etc/bind/named.conf.options done
+options {
+        directory "/var/cache/bind";
+
+        // If there is a firewall between you and nameservers you want
+        // to talk to, you may need to fix the firewall to allow multiple
+        // ports to talk.  See http://www.kb.cert.org/vuls/id/800113
+
+        // If your ISP provided one or more IP addresses for stable 
+        // nameservers, you probably want to use them as forwarders.  
+        // Uncomment the following block, and insert the addresses replacing 
+        // the all-0's placeholder.
+
+        //forwarders {
+        //      0.0.0.0;
+        // };
+
+        //========================================================================
+        // If BIND logs error messages about the root key being expired,
+        // you will need to update your keys.  See https://www.isc.org/bind-keys
+        //========================================================================
+        dnssec-validation auto;
+
+        auth-nxdomain no;    # conform to RFC1035
+        listen-on-v6 { any; };
+
+        allow-query { any; };
+        allow-recursion { 127.0.0.1; 130.236.178.216/29; };
+        allow-transfer { none; };
+        recursion no; 
+
+        //query-source address 127.0.0.1 port *;
+};
+
+*** server:/etc/bind/named.conf.local done
+// Do any local configuration here
+//
+
+// Consider adding the 1918 zones here, if they are not used in your
+// organization
+//include "/etc/bind/zones.rfc1918";
+
+zone "c4.sysinst.ida.liu.se" {
+        type master;
+        file "/etc/bind/db.c4.sysinst.ida.liu.se";
+};
+
+zone "178.236.130.in-addr.arpa" {
+        type master;
+        file "/etc/bind/db.130.236.178.in-addr.arpa";
+};
+
+
+
+** TODO Check that recursive calls are avaliable from inside the net
+** TODO check that non recursive calls are avaliable from outside
+
+
+* NTP
+
+** configuration file content
+
+**** server:/etc/ntp.conf
+# /etc/ntp.conf, configuration for ntpd; see ntp.conf(5) for help
+
+driftfile /var/lib/ntp/ntp.drift
+
+
+# Enable this if you want statistics to be logged.
+#statsdir /var/log/ntpstats/
+
+statistics loopstats peerstats clockstats
+filegen loopstats file loopstats type day enable
+filegen peerstats file peerstats type day enable
+filegen clockstats file clockstats type day enable
+
+
+# You do need to talk to an NTP server or two (or three).
+# server ntp.your-provider.example
+server 130.236.178.218 iburst
+
+
+# pool.ntp.org maps to about 1000 low-stratum NTP servers.  Your serve
+# pick a different set every time it starts up.  Please consider joini
+# pool: <http://www.pool.ntp.org/join.html>
+#server 0.debian.pool.ntp.org iburst
+#server 1.debian.pool.ntp.org iburst
+#server 2.debian.pool.ntp.org iburst
+#server 3.debian.pool.ntp.org iburst
+
+
+# Access control configuration; see /usr/share/doc/ntp-doc/html/accopt
+# details.  The web page <http://support.ntp.org/bin/view/Support/Acce
+# might also be helpful.
+#
+# Note that "restrict" applies to both servers and clients, so a confi
+# that might be intended to block requests from certain clients could 
+# up blocking replies from your own upstream servers.
+
+# By default, exchange time with everybody, but don't allow configurat
+restrict -4 default kod notrap nomodify nopeer noquery
+# restrict -6 default kod notrap nomodify nopeer noquery
+
+# Local users may interrogate the ntp server more closely.
+restrict 127.0.0.1
+restrict ::1
+#restrict 130.236.178.216 mask 255.255.255.248 limited kod notrap nomo
+
+# Clients from this (example!) subnet have unlimited access, but only 
+# cryptographically authenticated.
+# restrict 192.168.123.0 mask 255.255.255.0 notrust
+
+
+# If you want to hack time for your local subnet, change the next line
+# (Again, the address is an example only.)
+#broadcast 192.168.123.255
+#broadcast 130.236.178.223
+
+# If you want to listen to time broadcasts on your local subnet, de-co
+# next lines.  Please do this only if you trust everybody on the netwo
+disable auth
+broadcastclient
+**** others:/etc/ntp.conf
+# /etc/ntp.conf, configuration for ntpd; see ntp.conf(5) for help
+
+driftfile /var/lib/ntp/ntp.drift
+
+
+# Enable this if you want statistics to be logged.
+#statsdir /var/log/ntpstats/
+
+statistics loopstats peerstats clockstats
+filegen loopstats file loopstats type day enable
+filegen peerstats file peerstats type day enable
+filegen clockstats file clockstats type day enable
+
+
+# You do need to talk to an NTP server or two (or three).
+#server ntp.your-provider.example
+#server 130.236.178.219 iburst
+server 130.236.178.1 iburst
+restrict 130.236.178.1 mask 255.255.255.255 nomodify notrap nopeer
+
+# pool.ntp.org maps to about 1000 low-stratum NTP servers.  Your server will
+# pick a different set every time it starts up.  Please consider joining the
+# pool: <http://www.pool.ntp.org/join.html>
+#server 0.debian.pool.ntp.org iburst
+#server 1.debian.pool.ntp.org iburst
+#server 2.debian.pool.ntp.org iburst
+#server 3.debian.pool.ntp.org iburst
+
+
+# Access control configuration; see /usr/share/doc/ntp-doc/html/accopt.html for
+# details.  The web page <http://support.ntp.org/bin/view/Support/AccessRestrictions>
+# might also be helpful.
+#
+# Note that "restrict" applies to both servers and clients, so a configuration
+# that might be intended to block requests from certain clients could also end
+# up blocking replies from your own upstream servers.
+
+# By default, exchange time with everybody, but don't allow configuration.
+restrict -4 default kod notrap nomodify nopeer noquery
+#restrict -6 default kod notrap nomodify nopeer noquery
+
+# Local users may interrogate the ntp server more closely.
+restrict 127.0.0.1
+restrict ::1
+restrict 130.236.178.216 mask 255.255.255.248 limited kod notrap nomodify noquery
+
+# Clients from this (example!) subnet have unlimited access, but only if
+# cryptographically authenticated.
+#restrict 192.168.123.0 mask 255.255.255.0 notrust
+
+
+# If you want to provide time to your local subnet, change the next line.
+# (Again, the address is an example only.)
+#broadcast 192.168.123.255
+broadcast 130.236.178.223
+
+# If you want to listen to time broadcasts on your local subnet, de-comment the
+# next lines.  Please do this only if you trust everybody on the network!
+#disable auth
+#broadcastclient
+
+
+
+
+
+
+
+** TODO test server
+** TODO test clients
+
+* Left todo
+** TODO fix nis on router?
+
+
+* Reboot todo
+
+clear UML instances and set up new network
+
+/data/kurs/adit/bin/setup -s tddi09/lab-2
+
+** net
+
+basic connecivity
+
+*** DONE fix apt sources
+    CLOSED: [2016-12-26 Mon 10:15]
+
+**** /etc/apt/sources.list
+deb http://ftp.se.debian.org/debian wheezy main
+ 
+*** DONE configure hostnames on all machines
+    CLOSED: [2016-12-26 Mon 10:15]
+**** /etc/hostname
+***** gw
+gw
+***** server
+server
+***** client-1
+client-1
+***** client-2
+client-2 
+
+**** /etc/hosts
+127.0.0.1       localhost
+::1     ip6-localhost ip6-loopback
+fe00::0 ip6-localnet
+ff00::0 ip6-mcastprefix
+ff02::1 ip6-allnodes
+ff02::2 ip6-allrouters
+ff02::3 ip6-allhosts
+130.236.178.219 server.c4.sysinst.ida.liu.se server
+130.236.178.220 client-1.c4.sysinst.ida.liu.se client-1
+130.236.178.221 client-2.c4.sysinst.ida.liu.se client-2
+
+*** DONE configure network interfaces
+    CLOSED: [2016-12-26 Mon 10:15]
+    
+**** /etc/network/interfaces
+***** gw
+auto lo
+iface lo inet loopback
+auto eth0
+iface eth0 inet static
+        address 130.236.178.218
+        netmask 255.255.255.248
+auto eth1
+iface eth1 inet static
+        address 130.236.178.25
+        netmask 255.255.255.0
+        gateway 130.236.178.1
+
+***** *server
+auto lo
+iface lo inet loopback
+auto eth0
+iface eth0 inet static
+        address 130.236.178.220
+        netmask 255.255.255.248
+        gateway 130.236.178.218
+***** client-1
+auto lo
+iface lo inet loopback
+auto eth0
+iface eth0 inet static
+        address 130.236.178.220
+        netmask 255.255.255.248
+        gateway 130.236.178.218
+
+***** client-2 
+auto lo
+iface lo inet loopback
+auto eth0
+iface eth0 inet static
+        address 130.236.178.221
+        netmask 255.255.255.248
+        gateway 130.236.178.218
+	
+*** DONE configure name resolution
+    CLOSED: [2016-12-26 Mon 10:15]
+**** /etc/resolv.con
+domain ida.liu.se
+search ida.liu.se
+nameserver 130.236.186.13
+nameserver 130.236.186.16
+
+*** DONE configure nsswitch
+    CLOSED: [2016-12-26 Mon 10:15]
+In this stage all we need is to add:
+
+/etc/nsswitch
+hosts dns files
+
+later:
+
+passwd:         files nis
+group:          files nis
+shadow:         files nis
+
+hosts:          files dns
+networks:       files
+
+protocols:      db files
+services:       db files
+ethers:         db files
+rpc:            db files
+
+netgroup:       nis
+
+automount:      files nis
+#automount:     nis
+
+QUAGGA:
+
+ALL: 130.236.178.16/255.255.255.248
+
+*** DONE install packages
+    CLOSED: [2016-12-26 Mon 10:15]
+apt-get install quagga
+
+*** DONE copy config files
+    CLOSED: [2016-12-26 Mon 10:15]
+
+The configfiles needs to have the right permissions do this on all 4 files
+
+chown quagga:quagga /etc/quagga/zebra.conf
+chmod 640 /etc/quagga/zebra.conf
+
+chown quagga:quagga /etc/quagga/zebra.conf
+chmod 640 /etc/quagga/zebra.conf
+
+also enable forwarding:
+echo "1" > /proc/sys/net/ipv4/ip_forward
+
+**** /etc/quagga/daemons
+
+# This file tells the quagga package which daemons to start.
+#
+# Entries are in the format: <daemon>=(yes|no|priority)
+#   0, "no"  = disabled
+#   1, "yes" = highest priority
+#   2 .. 10  = lower priorities
+# Read /usr/share/doc/quagga/README.Debian for details.
+#
+# Sample configurations for these daemons can be found in
+# /usr/share/doc/quagga/examples/.
+#
+# ATTENTION: 
+#
+# When activation a daemon at the first time, a config file, even if it is
+# empty, has to be present *and* be owned by the user and group "quagga", else
+# the daemon will not be started by /etc/init.d/quagga. The permissions should
+# be u=rw,g=r,o=.
+# When using "vtysh" such a config file is also needed. It should be owned by
+# group "quaggavty" and set to ug=rw,o= though. Check /etc/pam.d/quagga, too.
+#
+# The watchquagga daemon is always started. Per default in monitoring-only but
+# that can be changed via /etc/quagga/debian.conf.
+#
+zebra=yes
+bgpd=no
+ospfd=no
+ospf6d=no
+ripd=yes
+ripngd=no
+isisd=no
+babeld=no
+**** /etc/quagga/debian.conf
+#
+# If this option is set the /etc/init.d/quagga script automatically loads
+# the config via "vtysh -b" when the servers are started. 
+# Check /etc/pam.d/quagga if you intend to use "vtysh"!
+#
+vtysh_enable=yes
+zebra_options="  --daemon -A 127.0.0.1"
+bgpd_options="   --daemon -A 127.0.0.1"
+ospfd_options="  --daemon -A 127.0.0.1"
+ospf6d_options=" --daemon -A ::1"
+ripd_options="   --daemon -A 127.0.0.1"
+ripngd_options=" --daemon -A ::1"
+isisd_options="  --daemon -A 127.0.0.1"
+babeld_options=" --daemon -A 127.0.0.1"
+#
+# Please note that watchquagga_options is an array and not a string so that
+# quotes can be used.
+#
+# The list of daemons to watch is automatically generated by the init script
+# from daemons.conf and appended to the watchquagga_options.
+# Example:
+#    watchquagga_options=("-Adz" "-r" '/sbin/service %s restart' -s '/sbin/service %s start'  -k '/sbin/service %s stop')
+watchquagga_enable=yes
+watchquagga_options=(--daemon)
+**** /etc/quagga/ripd.conf
+!
+! Zebra configuration saved from vty
+!   2016/10/10 12:04:35
+!
+hostname ripd
+password zebra
+log stdout
+interface eth1
+no ip rip authentication mode
+!
+router rip
+ version 2
+ redistribute connected
+ redistribute static
+ network eth1
+!
+line vty
+!
+
+**** /etc/quagga/zebra.conf
+
+! -*- zebra -*-
+!
+! zebra sample configuration file
+!
+! $Id: zebra.conf.sample,v 1.1 2002/12/13 20:15:30 paul Exp $
+!
+hostname Router
+password zebra
+enable password zebra
+!
+! Interface's description. 
+!
+!interface lo
+! description test of desc.
+!
+!interface sit0
+! multicast
+
+!
+! Static default route sample.
+!
+!ip route 0.0.0.0/0 203.181.89.241
+!
+
+!log file /var/log/quagga/zebra.log
+
+** dns
+
+*** DONE install the required packages
+    CLOSED: [2016-12-26 Mon 10:15]
+
+apt-get install bind9
+
+*** DONE copy configuration files
+    CLOSED: [2016-12-26 Mon 10:15]
+**** server:/etc/bind/bind.keys
+# The bind.keys file is used to override the built-in DNSSEC trust anchors
+# which are included as part of BIND 9.  As of the current release, the only
+# trust anchors it contains are those for the DNS root zone ("."), and for
+# the ISC DNSSEC Lookaside Validation zone ("dlv.isc.org").  Trust anchors
+# for any other zones MUST be configured elsewhere; if they are configured
+# here, they will not be recognized or used by named.
+#
+# The built-in trust anchors are provided for convenience of configuration.
+# They are not activated within named.conf unless specifically switched on.
+# To use the built-in root key, set "dnssec-validation auto;" in
+# named.conf options.  To use the built-in DLV key, set
+# "dnssec-lookaside auto;".  Without these options being set,
+# the keys in this file are ignored.
+#
+# This file is NOT expected to be user-configured.
+#
+# These keys are current as of January 2011.  If any key fails to
+# initialize correctly, it may have expired.  In that event you should
+# replace this file with a current version.  The latest version of
+# bind.keys can always be obtained from ISC at https://www.isc.org/bind-keys.
+
+managed-keys {
+        # ISC DLV: See https://www.isc.org/solutions/dlv for details.
+        # NOTE: This key is activated by setting "dnssec-lookaside auto;"
+        # in named.conf.
+        dlv.isc.org. initial-key 257 3 5 "BEAAAAPHMu/5onzrEE7z1egmhg/WPO0+juoZrW3euWEn4MxDCE1+lLy2
+                brhQv5rN32RKtMzX6Mj70jdzeND4XknW58dnJNPCxn8+jAGl2FZLK8t+
+                1uq4W+nnA3qO2+DL+k6BD4mewMLbIYFwe0PG73Te9fZ2kJb56dhgMde5
+                ymX4BI/oQ+cAK50/xvJv00Frf8kw6ucMTwFlgPe+jnGxPPEmHAte/URk
+                Y62ZfkLoBAADLHQ9IrS2tryAe7mbBZVcOwIeU/Rw/mRx/vwwMCTgNboM
+                QKtUdvNXDrYJDSHZws3xiRXF1Rf+al9UmZfSav/4NWLKjHzpT59k/VSt
+                TDN0YUuWrBNh";
+
+        # ROOT KEY: See https://data.iana.org/root-anchors/root-anchors.xml
+        # for current trust anchor information.
+        # NOTE: This key is activated by setting "dnssec-validation auto;"
+        # in named.conf.
+        . initial-key 257 3 8 "AwEAAagAIKlVZrpC6Ia7gEzahOR+9W29euxhJhVVLOyQbSEW0O8gcCjF
+                FVQUTf6v58fLjwBd0YI0EzrAcQqBGCzh/RStIoO8g0NfnfL2MTJRkxoX
+                bfDaUeVPQuYEhg37NZWAJQ9VnMVDxP/VHL496M/QZxkjf5/Efucp2gaD
+                X6RS6CXpoY68LsvPVjR0ZSwzz1apAzvN9dlzEheX7ICJBBtuA6G3LQpz
+                W5hOA2hzCTMjJPJ8LbqF6dsV6DoBQzgul0sGIcGOYl7OyQdXfZ57relS
+                Qageu+ipAdTTJ25AsRTAoub8ONGcLmqrAmRLKBP1dfwhYB4N7knNnulq
+                QxA+Uk1ihz0=";
+};
+
+**** server:/etc/bind/db.0
+
+;
+; BIND reverse data file for broadcast zone
+;
+$TTL    604800
+@       IN      SOA     localhost. root.localhost. (
+                              1         ; Serial
+                         604800         ; Refresh
+                          86400         ; Retry
+                        2419200         ; Expire
+                         604800 )       ; Negative Cache TTL
+;
+@       IN      NS      localhost.
+
+**** server:/etc/bind/db.127
+;
+; BIND reverse data file for local loopback interface
+;
+$TTL    30
+@       IN      SOA     localhost. root.localhost. (
+                              141101            ; Serial
+                                30                      ; Refresh
+                                30                      ; Retry
+                                30              ; Expire
+                                30 )                    ; Negative Cache TTL
+;
+@       IN      NS      localhost.
+1.0.0   IN      PTR     localhost.
+
+**** server:/etc/bind/db.130.236.178.in-addr.arpa done
+$TTL 30 
+
+@  IN SOA server.c4.sysinst.ida.liu.se. eripe320.student.liu.se. (
+200001
+30
+30
+30
+30
+ )
+@                             IN NS  server.c4.sysinst.ida.liu.se.
+
+218  IN PTR gw.c4.sysinst.ida.liu.se.
+219  IN PTR server.c4.sysinst.ida.liu.se.
+220  IN PTR client-1.c4.sysinst.ida.liu.se.
+221  IN PTR client-2.c4.sysinst.ida.liu.se. 
+
+****
+
+**** server:/etc/bind/db.255 done
+;
+; BIND reverse data file for broadcast zone
+;
+$TTL    604800
+@       IN      SOA     localhost. root.localhost. (
+                                141101          ; Serial
+                                30              ; Refresh
+                                30              ; Retry
+                                30              ; Expire
+                                30 )            ; Negative Cache TTL
+;
+@       IN      NS      localhost.
+
+**** server:/etc/bind/db.c4.sysinst.ida.liu.se done
+$TTL 30
+
+@  IN SOA server.c4.sysinst.ida.liu.se. eripe320.student.liu.se. (
+200001
+30
+30
+30
+30 )
+
+@               IN NS server.c4.sysinst.ida.liu.se. 
+
+gw      IN A  130.236.178.218
+server  IN A  130.236.178.219
+client-1 IN A  130.236.178.220
+client-2 IN A  130.236.178.221
+
+**** server:/etc/bind/db.empty done
+; BIND reverse data file for empty rfc1918 zone
+;
+; DO NOT EDIT THIS FILE - it is used for multiple zones.
+; Instead, copy it, edit named.conf, and use that copy.
+;
+$TTL    86400
+@       IN      SOA     localhost. root.localhost. (
+                              1         ; Serial
+                         604800         ; Refresh
+                          86400         ; Retry
+                        2419200         ; Expire
+                          86400 )       ; Negative Cache TTL
+;
+@       IN      NS      localhost.
+
+**** server:/etc/bind/db.local done
+;
+; BIND data file for local loopback interface
+;
+$TTL    30
+@       IN      SOA     localhost. root.localhost. (
+                         141101         ; Serial
+                         30             ; Refresh
+                         30             ; Retry
+                         30             ; Expire
+                         30 )           ; Negative Cache TTL
+;
+@       IN      NS      localhost.
+@       IN      A       127.0.0.1
+@       IN      AAAA    ::1
+
+**** server:/etc/bind/db.root
+
+Unsure if this needs to be edited, saved it anyway
+
+;       This file holds the information on root name servers needed to
+;       initialize cache of Internet domain name servers
+;       (e.g. reference this file in the "cache  .  <file>"
+;       configuration file of BIND domain name servers).
+;
+;       This file is made available by InterNIC 
+;       under anonymous FTP as
+;           file                /domain/named.cache
+;           on server           FTP.INTERNIC.NET
+;       -OR-                    RS.INTERNIC.NET
+;
+;       last update:    Jan 3, 2013
+;       related version of root zone:   2013010300
+;
+; formerly NS.INTERNIC.NET
+;
+.                        3600000  IN  NS    A.ROOT-SERVERS.NET.
+A.ROOT-SERVERS.NET.      3600000      A     198.41.0.4
+A.ROOT-SERVERS.NET.      3600000      AAAA  2001:503:BA3E::2:30
+;
+; FORMERLY NS1.ISI.EDU
+;
+.                        3600000      NS    B.ROOT-SERVERS.NET.
+B.ROOT-SERVERS.NET.      3600000      A     192.228.79.201
+;
+; FORMERLY C.PSI.NET
+;
+.                        3600000      NS    C.ROOT-SERVERS.NET.
+C.ROOT-SERVERS.NET.      3600000      A     192.33.4.12
+;
+; FORMERLY TERP.UMD.EDU
+;
+.                        3600000      NS    D.ROOT-SERVERS.NET.
+D.ROOT-SERVERS.NET.      3600000      A     199.7.91.13
+D.ROOT-SERVERS.NET.      3600000      AAAA  2001:500:2D::D
+;
+; FORMERLY NS.NASA.GOV
+;
+.                        3600000      NS    E.ROOT-SERVERS.NET.
+E.ROOT-SERVERS.NET.      3600000      A     192.203.230.10
+;
+; FORMERLY NS.ISC.ORG
+;
+.                        3600000      NS    F.ROOT-SERVERS.NET.
+F.ROOT-SERVERS.NET.      3600000      A     192.5.5.241
+F.ROOT-SERVERS.NET.      3600000      AAAA  2001:500:2F::F
+;
+; FORMERLY NS.NIC.DDN.MIL
+;
+.                        3600000      NS    G.ROOT-SERVERS.NET.
+G.ROOT-SERVERS.NET.      3600000      A     192.112.36.4
+;
+; FORMERLY AOS.ARL.ARMY.MIL
+;
+.                        3600000      NS    H.ROOT-SERVERS.NET.
+H.ROOT-SERVERS.NET.      3600000      A     128.63.2.53
+H.ROOT-SERVERS.NET.      3600000      AAAA  2001:500:1::803F:235
+;
+; FORMERLY NIC.NORDU.NET
+;
+.                        3600000      NS    I.ROOT-SERVERS.NET.
+I.ROOT-SERVERS.NET.      3600000      A     192.36.148.17
+I.ROOT-SERVERS.NET.      3600000      AAAA  2001:7FE::53
+;
+; OPERATED BY VERISIGN, INC.
+;
+.                        3600000      NS    J.ROOT-SERVERS.NET.
+J.ROOT-SERVERS.NET.      3600000      A     192.58.128.30
+J.ROOT-SERVERS.NET.      3600000      AAAA  2001:503:C27::2:30
+;
+; OPERATED BY RIPE NCC
+;
+.                        3600000      NS    K.ROOT-SERVERS.NET.
+K.ROOT-SERVERS.NET.      3600000      A     193.0.14.129
+K.ROOT-SERVERS.NET.      3600000      AAAA  2001:7FD::1
+;
+; OPERATED BY ICANN
+;
+.                        3600000      NS    L.ROOT-SERVERS.NET.
+L.ROOT-SERVERS.NET.      3600000      A     199.7.83.42
+L.ROOT-SERVERS.NET.      3600000      AAAA  2001:500:3::42
+;
+; OPERATED BY WIDE
+;
+.                        3600000      NS    M.ROOT-SERVERS.NET.
+M.ROOT-SERVERS.NET.      3600000      A     202.12.27.33
+M.ROOT-SERVERS.NET.      3600000      AAAA  2001:DC3::35
+; End of File
+
+**** server:/etc/bind/named.conf done
+
+// This is the primary configuration file for the BIND DNS server named.
+//
+// Please read /usr/share/doc/bind9/README.Debian.gz for information on the 
+// structure of BIND configuration files in Debian, *BEFORE* you customize 
+// this configuration file.
+//
+// If you are just adding zones, please do that in /etc/bind/named.conf.local
+
+include "/etc/bind/named.conf.options";
+include "/etc/bind/named.conf.local";
+include "/etc/bind/named.conf.default-zones";
+
+
+
+# provide a reverse mapping for the loopback adress 127.0.0.1
+#zone "0.0.127.in-addr.arpa" {
+#       type master
+#       file "localhost.rev" # PROBABLY SUPER WRONG
+
+#disable rndc commands
+#controls { };
+
+#enable rndc commands
+#controls {
+ #   inet 127.0.0.1 port 953 allow { 127.0.0.1; };
+#};
+
+**** server:/etc/bind/named.conf.default-zones
+// prime the server with knowledge of the root servers
+zone "." {
+        type hint;
+        file "/etc/bind/db.root";
+};
+
+// be authoritative for the localhost forward and reverse zones, and for
+// broadcast zones as per RFC 1912
+
+zone "localhost" {
+        type master;
+        file "/etc/bind/db.local";
+};
+
+zone "127.in-addr.arpa" {
+        type master;
+        file "/etc/bind/db.127";
+};
+
+zone "0.in-addr.arpa" {
+        type master;
+        file "/etc/bind/db.0";
+};
+
+zone "255.in-addr.arpa" {
+        type master;
+        file "/etc/bind/db.255";
+};
+
+**** server:/etc/bind/named.conf.options done
+options {
+        directory "/var/cache/bind";
+
+        // If there is a firewall between you and nameservers you want
+        // to talk to, you may need to fix the firewall to allow multiple
+        // ports to talk.  See http://www.kb.cert.org/vuls/id/800113
+
+        // If your ISP provided one or more IP addresses for stable 
+        // nameservers, you probably want to use them as forwarders.  
+        // Uncomment the following block, and insert the addresses replacing 
+        // the all-0's placeholder.
+
+        //forwarders {
+        //      0.0.0.0;
+        // };
+
+        //========================================================================
+        // If BIND logs error messages about the root key being expired,
+        // you will need to update your keys.  See https://www.isc.org/bind-keys
+        //========================================================================
+        dnssec-validation auto;
+
+        auth-nxdomain no;    # conform to RFC1035
+        listen-on-v6 { any; };
+
+        allow-query { any; };
+        allow-recursion { 127.0.0.1; 130.236.178.216/29; };
+        allow-transfer { none; };
+        recursion no; 
+
+        //query-source address 127.0.0.1 port *;
+};
+
+**** server:/etc/bind/named.conf.local done
+// Do any local configuration here
+//
+
+// Consider adding the 1918 zones here, if they are not used in your
+// organization
+//include "/etc/bind/zones.rfc1918";
+
+zone "c4.sysinst.ida.liu.se" {
+        type master;
+        file "/etc/bind/db.c4.sysinst.ida.liu.se";
+};
+
+zone "178.236.130.in-addr.arpa" {
+        type master;
+        file "/etc/bind/db.130.236.178.in-addr.arpa";
+};
+
+**** server:/etc/bind/rndc.key
+key "rndc-key" {
+        algorithm hmac-md5;
+        secret "NAwb7IKHZtDE1iG0ai4vxw==";
+};
+
+**** server:/etc/bind/zones.rfc1918
+zone "10.in-addr.arpa"      { type master; file "/etc/bind/db.empty"; };
+ 
+zone "16.172.in-addr.arpa"  { type master; file "/etc/bind/db.empty"; };
+zone "17.172.in-addr.arpa"  { type master; file "/etc/bind/db.empty"; };
+zone "18.172.in-addr.arpa"  { type master; file "/etc/bind/db.empty"; };
+zone "19.172.in-addr.arpa"  { type master; file "/etc/bind/db.empty"; };
+zone "20.172.in-addr.arpa"  { type master; file "/etc/bind/db.empty"; };
+zone "21.172.in-addr.arpa"  { type master; file "/etc/bind/db.empty"; };
+zone "22.172.in-addr.arpa"  { type master; file "/etc/bind/db.empty"; };
+zone "23.172.in-addr.arpa"  { type master; file "/etc/bind/db.empty"; };
+zone "24.172.in-addr.arpa"  { type master; file "/etc/bind/db.empty"; };
+zone "25.172.in-addr.arpa"  { type master; file "/etc/bind/db.empty"; };
+zone "26.172.in-addr.arpa"  { type master; file "/etc/bind/db.empty"; };
+zone "27.172.in-addr.arpa"  { type master; file "/etc/bind/db.empty"; };
+zone "28.172.in-addr.arpa"  { type master; file "/etc/bind/db.empty"; };
+zone "29.172.in-addr.arpa"  { type master; file "/etc/bind/db.empty"; };
+zone "30.172.in-addr.arpa"  { type master; file "/etc/bind/db.empty"; };
+zone "31.172.in-addr.arpa"  { type master; file "/etc/bind/db.empty"; };
+
+zone "168.192.in-addr.arpa" { type master; file "/etc/bind/db.empty"; };
+
+
+** NTP
+
+*** DONE install package
+    CLOSED: [2016-12-26 Mon 10:15]
+
+apt-get install ntp
+
+*** DONE copy config files
+    CLOSED: [2016-12-26 Mon 10:16]
+
+**** server:/etc/ntp.conf
+# /etc/ntp.conf, configuration for ntpd; see ntp.conf(5) for help
+
+driftfile /var/lib/ntp/ntp.drift
+
+
+# Enable this if you want statistics to be logged.
+#statsdir /var/log/ntpstats/
+
+statistics loopstats peerstats clockstats
+filegen loopstats file loopstats type day enable
+filegen peerstats file peerstats type day enable
+filegen clockstats file clockstats type day enable
+
+
+# You do need to talk to an NTP server or two (or three).
+# server ntp.your-provider.example
+server 130.236.178.218 iburst
+
+
+# pool.ntp.org maps to about 1000 low-stratum NTP servers.  Your serve
+# pick a different set every time it starts up.  Please consider joini
+# pool: <http://www.pool.ntp.org/join.html>
+#server 0.debian.pool.ntp.org iburst
+#server 1.debian.pool.ntp.org iburst
+#server 2.debian.pool.ntp.org iburst
+#server 3.debian.pool.ntp.org iburst
+
+
+# Access control configuration; see /usr/share/doc/ntp-doc/html/accopt
+# details.  The web page <http://support.ntp.org/bin/view/Support/Acce
+# might also be helpful.
+#
+# Note that "restrict" applies to both servers and clients, so a confi
+# that might be intended to block requests from certain clients could 
+# up blocking replies from your own upstream servers.
+
+# By default, exchange time with everybody, but don't allow configurat
+restrict -4 default kod notrap nomodify nopeer noquery
+# restrict -6 default kod notrap nomodify nopeer noquery
+
+# Local users may interrogate the ntp server more closely.
+restrict 127.0.0.1
+restrict ::1
+#restrict 130.236.178.216 mask 255.255.255.248 limited kod notrap nomo
+
+# Clients from this (example!) subnet have unlimited access, but only 
+# cryptographically authenticated.
+# restrict 192.168.123.0 mask 255.255.255.0 notrust
+
+
+# If you want to hack time for your local subnet, change the next line
+# (Again, the address is an example only.)
+#broadcast 192.168.123.255
+#broadcast 130.236.178.223
+
+# If you want to listen to time broadcasts on your local subnet, de-co
+# next lines.  Please do this only if you trust everybody on the netwo
+disable auth
+broadcastclient
+**** others:/etc/ntp.conf
+# /etc/ntp.conf, configuration for ntpd; see ntp.conf(5) for help
+
+driftfile /var/lib/ntp/ntp.drift
+
+
+# Enable this if you want statistics to be logged.
+#statsdir /var/log/ntpstats/
+
+statistics loopstats peerstats clockstats
+filegen loopstats file loopstats type day enable
+filegen peerstats file peerstats type day enable
+filegen clockstats file clockstats type day enable
+
+
+# You do need to talk to an NTP server or two (or three).
+#server ntp.your-provider.example
+#server 130.236.178.219 iburst
+server 130.236.178.1 iburst
+restrict 130.236.178.1 mask 255.255.255.255 nomodify notrap nopeer
+
+# pool.ntp.org maps to about 1000 low-stratum NTP servers.  Your server will
+# pick a different set every time it starts up.  Please consider joining the
+# pool: <http://www.pool.ntp.org/join.html>
+#server 0.debian.pool.ntp.org iburst
+#server 1.debian.pool.ntp.org iburst
+#server 2.debian.pool.ntp.org iburst
+#server 3.debian.pool.ntp.org iburst
+
+
+# Access control configuration; see /usr/share/doc/ntp-doc/html/accopt.html for
+# details.  The web page <http://support.ntp.org/bin/view/Support/AccessRestrictions>
+# might also be helpful.
+#
+# Note that "restrict" applies to both servers and clients, so a configuration
+# that might be intended to block requests from certain clients could also end
+# up blocking replies from your own upstream servers.
+
+# By default, exchange time with everybody, but don't allow configuration.
+restrict -4 default kod notrap nomodify nopeer noquery
+#restrict -6 default kod notrap nomodify nopeer noquery
+
+# Local users may interrogate the ntp server more closely.
+restrict 127.0.0.1
+restrict ::1
+restrict 130.236.178.216 mask 255.255.255.248 limited kod notrap nomodify noquery
+
+# Clients from this (example!) subnet have unlimited access, but only if
+# cryptographically authenticated.
+#restrict 192.168.123.0 mask 255.255.255.0 notrust
+
+
+# If you want to provide time to your local subnet, change the next line.
+# (Again, the address is an example only.)
+#broadcast 192.168.123.255
+broadcast 130.236.178.223
+
+# If you want to listen to time broadcasts on your local subnet, de-comment the
+# next lines.  Please do this only if you trust everybody on the network!
+#disable auth
+#broadcastclient
+
+
+** NIS
+
+*** DONE install packages
+    CLOSED: [2016-12-26 Mon 10:16]
+
+nis netbase, netstd
+
+*** DONE Make sure all clients have eachoter in etc hosts
+    CLOSED: [2016-12-26 Mon 10:16]
+    
+*** DONE edit config files
+    CLOSED: [2016-12-26 Mon 10:16]
+
+**** server:/etc/default/nis
+
+#
+# /etc/defaults/nis     Configuration settings for the NIS daemons.
+#
+
+# Are we a NIS server and if so what kind (values: false, slave, master)?
+NISSERVER=master
+
+# Are we a NIS client?
+NISCLIENT=false
+
+# Location of the master NIS password file (for yppasswdd).
+# If you change this make sure it matches with /var/yp/Makefile.
+YPPWDDIR=/etc
+
+# Do we allow the user to use ypchsh and/or ypchfn ? The YPCHANGEOK
+# fields are passed with -e to yppasswdd, see it's manpage.
+# Possible values: "chsh", "chfn", "chsh,chfn"
+YPCHANGEOK=chsh
+
+# NIS master server.  If this is configured on a slave server then ypinit
+# will be run each time NIS is started.
+NISMASTER=
+
+# Additional options to be given to ypserv when it is started.
+YPSERVARGS=
+
+# Additional options to be given to ypbind when it is started.  
+YPBINDARGS=-no-dbus
+
+# Additional options to be given to yppasswdd when it is started.  Note
+# that if -p is set then the YPPWDDIR above should be empty.
+YPPASSWDDARGS=
+
+# Additional options to be given to ypxfrd when it is started. 
+YPXFRDARGS=
+
+**** others /etc/default/nis
+
+#
+# /etc/defaults/nis     Configuration settings for the NIS daemons.
+#
+
+# Are we a NIS server and if so what kind (values: false, slave, master)?
+NISSERVER=false
+
+# Are we a NIS client?
+NISCLIENT=true
+
+# Location of the master NIS password file (for yppasswdd).
+# If you change this make sure it matches with /var/yp/Makefile.
+YPPWDDIR=/etc
+
+# Do we allow the user to use ypchsh and/or ypchfn ? The YPCHANGEOK
+# fields are passed with -e to yppasswdd, see it's manpage.
+# Possible values: "chsh", "chfn", "chsh,chfn"
+YPCHANGEOK=chsh
+
+# NIS master server.  If this is configured on a slave server then ypinit
+# will be run each time NIS is started.
+NISMASTER=
+
+# Additional options to be given to ypserv when it is started.
+YPSERVARGS=
+
+# Additional options to be given to ypbind when it is started.  
+YPBINDARGS=-no-dbus
+
+# Additional options to be given to yppasswdd when it is started.  Note
+# that if -p is set then the YPPWDDIR above should be empty.
+YPPASSWDDARGS=
+
+# Additional options to be given to ypxfrd when it is started. 
+YPXFRDARGS=
+
+**** server:/var/yp/Makefile
+!!!!NOT EVERYTHING BUT MOST IMPORTANT PART!!!!
+
+# These are the files from which the NIS databases are built. You may edit
+# these to taste in the event that you wish to keep your NIS source files
+# seperate from your NIS server's actual configuration files.
+#
+GROUP       = $(YPPWDDIR)/group
+PASSWD      = $(YPPWDDIR)/passwd
+SHADOW      = $(YPPWDDIR)/shadow
+GSHADOW     = $(YPPWDDIR)/gshadow
+ADJUNCT     = $(YPPWDDIR)/passwd.adjunct
+#ALIASES     = $(YPSRCDIR)/aliases  # aliases could be in /etc or /etc/mail
+ALIASES     = /etc/mail/aliases
+ETHERS      = $(YPSRCDIR)/ethers     # ethernet addresses (for rarpd)
+BOOTPARAMS  = $(YPSRCDIR)/bootparams # for booting Sun boxes (bootparamd)
+HOSTS       = $(YPSRCDIR)/hosts
+NETWORKS    = $(YPSRCDIR)/networks
+PRINTCAP    = $(YPSRCDIR)/printcap
+PROTOCOLS   = $(YPSRCDIR)/protocols
+PUBLICKEYS  = $(YPSRCDIR)/publickey
+RPC         = $(YPSRCDIR)/rpc
+SERVICES    = $(YPSRCDIR)/services
+NETGROUP    = $(YPSRCDIR)/netgroup
+NETID       = $(YPSRCDIR)/netid
+AMD_HOME    = $(YPSRCDIR)/am-utils/amd.home
+AUTO_MASTER = $(YPSRCDIR)/auto.master
+AUTO_HOME   = $(YPSRCDIR)/auto.home
+AUTO_LOCAL  = $(YPSRCDIR)/auto.local
+TIMEZONE    = $(YPSRCDIR)/timezone
+LOCALE      = $(YPSRCDIR)/locale
+NETMASKS    = $(YPSRCDIR)/netmasks
+
+YPSERVERS = $(YPDIR)/ypservers  # List of all NIS servers for a domain
+
+target: Makefile
+        @test ! -d $(LOCALDOMAIN) && mkdir $(LOCALDOMAIN) ; \
+        cd $(LOCALDOMAIN)  ; \
+        $(NOPUSH) || $(MAKE) -f ../Makefile ypservers; \
+        $(MAKE) -f ../Makefile all
+
+# If you don't want some of these maps built, feel free to comment
+# them out from this list.
+
+# I REMOVED AUTO.MASTER TO TRY WITHOUT THAT SHIT!!!!!!
+ALL =   passwd group hosts rpc services netid protocols netgrp
+#ALL += publickey mail ethers bootparams printcap
+ALL +=  auto.master auto.home auto.local
+#ALL += timezone locale networks netmasks
+
+**** clients:/etc/passwd
+append:
++::::::
+**** server:/etc/nsswitch
+# /etc/nsswitch.conf
+#
+# Example configuration of GNU Name Service Switch functionality.
+# If you have the `glibc-doc-reference' and `info' packages installed, try:
+# `info libc "Name Service Switch"' for information about this file.
+
+passwd:         compat
+group:          compat
+shadow:         compat
+
+hosts:          files dns
+networks:       files
+
+protocols:      db files
+services:       db files
+ethers:         db files
+rpc:            db files
+
+netgroup:       nis
+automount:      files nis
+
+**** clients /etc/nsswtch
+# /etc/nsswitch.conf
+#
+# Example configuration of GNU Name Service Switch functionality.
+# If you have the `glibc-doc-reference' and `info' packages installed, try:
+# `info libc "Name Service Switch"' for information about this file.
+
+passwd:         files nis
+group:          files nis
+shadow:         files nis
+
+hosts:          files dns
+networks:       files
+
+protocols:      db files
+services:       db files
+ethers:         db files
+rpc:            db files
+
+netgroup:       nis
+
+automount:      files nis
+#automount:     nis
+root@client-1:~# 
+
+** storage nfs
+
+*** DONE Create home1 and home2 and mount with raid and lvm
+    CLOSED: [2016-12-26 Mon 10:16]
+    
+*** DONE edit server:/etc/exports
+    CLOSED: [2016-12-26 Mon 10:16]
+
+# /etc/exports: the access control list for filesystems which may be exported
+#               to NFS clients.  See exports(5).
+#
+# Example for NFSv2 and NFSv3:
+# /srv/homes       hostname1(rw,sync,no_subtree_check) hostname2(ro,sync,no_subtree_check)
+#
+# Example for NFSv4:
+# /srv/nfs4        gss/krb5i(rw,sync,fsid=0,crossmnt,no_subtree_check)
+# /srv/nfs4/homes  gss/krb5i(rw,sync,no_subtree_check)
+#
+
+install:
+nfs-kernel-server
+nfs-commons
+
+/usr/local/ client-1(rw,sync,no_subtree_check)
+/home1 client-1(rw,sync,no_subtree_check)
+/home2 client-1(rw,sync,no_subtree_check)
+/export client-1(rw,sync,no_subtree_check)
+
+DONT FORGET TO RUN exportfs
+
+try to mount with
+
+mount -v -t nfs server.c4.sysinst.ida.liu.se:/home.1/memeboy /mnt -o nfsvers=3
+
+** automount
+
+*** DONE config files
+    CLOSED: [2016-12-26 Mon 10:16]
+
+**** /etc/auto.master
+#
+# Sample auto.master file
+# This is an automounter map and it has the following format
+# key [ -mount-options-separated-by-comma ] location
+# For details of the format look at autofs(5).
+#
+#/misc  /etc/auto.misc
+#
+# NOTE: mounts done from a hosts map will be mounted with the
+#       "nosuid" and "nodev" options unless the "suid" and "dev"
+#       options are explicitly given.
+#
+#/net   -hosts
+#
+# Include /etc/auto.master.d/*.autofs
+#
++dir:/etc/auto.master.d
+#
+# Include central master map if it can be found using
+# nsswitch sources.
+#
+# Note that if there are entries for /net or /misc (as
+# above) in the included master map any keys that are the
+# same will not be seen as the first read key seen takes
+# precedence.
+#
+#+auto.master
+#+auto.home
+/home auto.home
+#/usr auto.local
+#+auto.home
++auto.master
+
+
+**** /etc/auto.home
+memeboy -fstype=nfs,vers=3 server.c4.sysinst.ida.liu.se:/home.1/&
+memegirl -fstype=nfs,vers=3 server.c4.sysinst.ida.liu.se:/home.2/&
+
+**** /etc/auto.local
+
+local -fstype=nfs,vers=3 server.c4.sysinst.ida.liu.se:/usr/local
+
+sudo apt-key adv --keyserver keyserver.ubuntu.com --recv-keys 8B48AD6246925553

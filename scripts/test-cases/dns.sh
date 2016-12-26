@@ -5,7 +5,6 @@
 # Preconditions
 
 # Procedure:
-
-printf "Testing nis-server [\e[1m\e[92mOK\e[0m]\n"
+printf "Testing dns [\e[1m\e[92mOK\e[0m]\n"
 
 # Expected results:

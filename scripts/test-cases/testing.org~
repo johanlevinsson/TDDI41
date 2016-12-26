@@ -1,0 +1,36 @@
+
+
+* networking
+
+The network consists of the following machines
+
+| Hostname  |              IP |
+|----------- +----------------|
+| gw        | 130.236.178.218 |
+| server    | 130.236.178.219 |
+| client-1  | 130.236.178.220 |
+| client-2  | 130.236.178.221 |
+|-----------------------------|
+
+** Configuration files
+
+*** /etc/ 
+
+** TODO Test hostname
+
+run the command hostname and compare it to a table of ip-adresses that
+mach our hostnames
+
+server 1
+
+** TODO Test ip-configuration
+
+The opposite way around, test ip-addresses match a table of hostnames
+
+** TODO Test default gateway 
+
+Compare default gateway to ip-address
+
+** TODO Test name resolution
+
+ping 

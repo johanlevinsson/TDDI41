@@ -6,6 +6,5 @@
 
 # Procedure:
 
-printf "Testing nis-server [\e[1m\e[92mOK\e[0m]\n"
 
 # Expected results:
