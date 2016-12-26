@@ -9,19 +9,20 @@
 # Procedure:
 #!/bin/bash
 
+
 function print_test {
     TEST_NAME=$1
     RESULT=$2    
     padlength=40
     pad=$(printf '%0.1s' "-"{1..60})
     if [ "$RESULT" == "okey" ]; then
-	printf '%s' "$TEST_NAME"
-	printf '%*.*s' 0 $((padlength - ${#TEST_NAME} )) "$pad"
-	printf "[\e[1m\e[92mOK\e[0m]\n"  
+        printf '%s' "$TEST_NAME"
+        printf '%*.*s' 0 $((padlength - ${#TEST_NAME} )) "$pad"
+        printf "[\e[1m\e[92mOK\e[0m]\n"  
     else
-	printf '%s' "$TEST_NAME"
-	printf '%*.*s' 0 $((padlength - ${#TEST_NAME} )) "$pad"
-	printf "[\e[1m\e[31mFAIL\e[0m]\n"
+        printf '%s' "$TEST_NAME"
+        printf '%*.*s' 0 $((padlength - ${#TEST_NAME} )) "$pad"
+        printf "[\e[1m\e[31mFAIL\e[0m]\n"
     fi
 }
 
@@ -30,7 +31,7 @@ function print_test {
 
 HOSTNAME=$(hostname)
 echo $HOSTNAME
-exec 3>&1 4>&2 1>basic-network-$HOSTNAME.log 2>&1
+exec 3>&1 4>&2 1>"basic-network-$HOSTNAME.log" 2>&1
 IP_ADRESS=$(ifconfig eth0 | awk '/inet addr/{print substr($2,6)}')
 echo "#$IP_ADRESS#"
 
