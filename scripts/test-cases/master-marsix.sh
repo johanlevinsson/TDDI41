@@ -30,7 +30,7 @@ function print_test {
 # echo >&2
 
 printf "runnig local scripts on marsix \n"
-source ./dns-recursive
+source ./dns-recursive.sh
 source ./dns-non-recursive.sh
 
 printf "Running remote tests on router: \n"
