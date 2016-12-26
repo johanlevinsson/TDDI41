@@ -43,7 +43,7 @@ if [ "$IP_ADRESS" == "130.236.178.218" ]; then
 	fi
     fi
 else
-    if [ "$IP_ADRESS" == "130.236.178.218" ] && [ "$HOSTNAME" == "server" ]; then
+    if [ "$IP_ADRESS" == "130.236.178.219" ] && [ "$HOSTNAME" == "server" ]; then
 	TEST_RESULT=okey
     elif [ "$IP_ADRESS" == "130.236.178.220" ] && [ "$HOSTNAME" == "client_1" ]; then
 	TEST_RESULT=okey
