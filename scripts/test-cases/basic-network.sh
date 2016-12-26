@@ -7,28 +7,65 @@
 # Procedure:
 #!/bin/bash
 
-## First Test HOSTNAME
-
-# HOSTNAME=hostname
-
 function print_test {
-
-TEST_NAME=$1
-TEST_RESULT=$2    
+    TEST_NAME=$1
+    TEST_RESULT=$2    
     padlength=40
     pad=$(printf '%0.1s' "-"{1..60})
-    if [ $TEST_RESULT == "fail" ]; then
+    if [ TEST_RESULT == "okey" ]; then
 	printf '%s' "$TEST_NAME"
 	printf '%*.*s' 0 $((padlength - ${#TEST_NAME} )) "$pad"
-	printf "[\e[1m\e[31mFAIL\e[0m]\n"
+	printf "[\e[1m\e[92mOK\e[0m]$okey_string"  
     else
 	printf '%s' "$TEST_NAME"
 	printf '%*.*s' 0 $((padlength - ${#TEST_NAME} )) "$pad"
-	printf "[\e[1m\e[92mOK\e[0m]$okey_string\n"  
+	printf "[\e[1m\e[31mFAIL\e[0m]"
     fi
 }
-print_test hostname okey
 
+# Test hostname and ip: compare hostname with ip
+
+HOSTNAME=$(hostname)
+#exec 3>&1 4>&2 1>basic-network-$HOSTNAME.log 2>&1
+IP_ADRESS=$(ifconfig | awk '/inet addr/{print substr($2,6)}')
+
+if [ IP_ADDRESS == "130.236.178.219" ]; then
+    if [ HOSTNAME == "server" ]; then
+	EXTERNAL_ADRESS=$(ifconfig | awk '/inet addr/{print substr($2,6)}')
+	if [ EXTERNAL_ADDRESS == "130.236.178.25" ]; then
+	    TEST_RESULT"=okey"
+	else
+	    TEST_result="fail"
+	fi
+    elif [ IP_ADDRESS == "130.236.178.218" && HOSTNAME == "gw" ]; then
+	TEST_RESULT="okey"
+    elif [ IP_ADDRESS == "130.236.178.220" && HOSTNAME == "client_1" ]; then
+	TEST_RESULT="okey"
+    elif [ IP_ADDRESS == "130.236.178.221" && HOSTNAME == "client_2" ]; then
+	TEST_RESULT="okey"
+    else
+	TEST_RESULT="Fail"
+	printf "Hostname ip addres on $HOSTNAME failed due to hostname-ip missmatch\n"
+    fi
+
+fi
+#exec 1>&3 2>&4
+echo >&2 
+print_test "Basic network" $TEST_RESULT
+
+# Test name resolution ping www.google.se
+#exec 3>&1 4>&2 1>"name_resolution-$HOSTNAME.log" 2>&1
+
+PING=$(ping -c 1 -n www.google.se | grep '0% packet loss')
+if [[ -z $PING ]] ; then
+    TEST_RESULT="fail"
+else
+    TEST_RESULT="okey"
+fi
+#exec 1>&3 2>&4
+echo >&2
+print_test "Name resolution" $TEST_RESULT
+echo "\n"
        
 # if [ $HOSTNAME -eq "client-1" OR $HOSTNAME -eq "client-2" OR $HOSTNAME -eq "server" OR $HOSTNAME -eq "gw"  ] ; then
 #     print_test "Testing hostname" okey
