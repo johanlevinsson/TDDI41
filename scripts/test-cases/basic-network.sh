@@ -30,7 +30,7 @@ function print_test {
 
 HOSTNAME=$(hostname)
 echo $HOSTNAME
-exec 3>&1 4>&2 1>basic-network-$HOSTNAME.log 2>&1
+exec 3>&1 4>&2 1>./log/basic-network-$HOSTNAME.log 2>&1
 IP_ADRESS=$(ifconfig eth0 | awk '/inet addr/{print substr($2,6)}')
 echo "#$IP_ADRESS#"
 
@@ -69,11 +69,11 @@ fi
 exec 1>&3 2>&4
 echo >&2 
 #echo $TEST_RESULT
-print_test "Basic network" $TEST_RESULT
+print_test "Hostname- and ip-configuration" $TEST_RESULT
 
 # Test name resolution ping www.google.se
 
-
+exec 3>&1 4>&2 1>./log/basic-network-$HOSTNAME.log 2>&1
 PING=$(ping -c 1 -n www.google.se | grep '0% packet loss')
 if [[ -z $PING ]] ; then
     TEST_RESULT=fail
