@@ -12,12 +12,12 @@
 HOSTNAME=$(hostname)
 echo $HOSTNAME
 #exec 3>&1 4>&2 1>basic-network-$HOSTNAME.log 2>&1
-IP_ADRESS=$(ifconfig | awk '/inet addr/{print substr($2,6)}')
+IP_ADRESS=$(ifconfig eth0 | awk '/inet addr/{print substr($2,6)}')
 echo $IP_ADRESS
 
 if [ IP_ADDRESS == 130.236.178.219 ]; then
     if [ HOSTNAME == server ]; then
-	EXTERNAL_ADRESS=$(ifconfig | awk '/inet addr/{print substr($2,6)}')
+	EXTERNAL_ADRESS=$(ifconfig eth1 | awk '/inet addr/{print substr($2,6)}')
 	if [ EXTERNAL_ADDRESS == 130.236.178.25 ]; then
 	    TEST_RESULT=okey
 	else
