@@ -38,7 +38,7 @@ if [ "$IP_ADRESS" == "130.236.178.218" ]; then
 fi
 #exec 1>&3 2>&4
 echo >&2 
-print_test "Basic network" $TEST_RESULT
+print_test "Basic network" "$TEST_RESULT"
 
 # Test name resolution ping www.google.se
 #exec 3>&1 4>&2 1>"name_resolution-$HOSTNAME.log" 2>&1
@@ -51,7 +51,7 @@ else
 fi
 #exec 1>&3 2>&4
 echo >&2
-print_test "Name resolution" $TEST_RESULT
+print_test "Name resolution" "$TEST_RESULT"
 echo "\n"
        
 # if [ $HOSTNAME -eq "client-1" OR $HOSTNAME -eq "client-2" OR $HOSTNAME -eq "server" OR $HOSTNAME -eq "gw"  ] ; then
