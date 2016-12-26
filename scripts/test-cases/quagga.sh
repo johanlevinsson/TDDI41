@@ -24,7 +24,7 @@ function print_test {
 }
 
 
-exec 3>&1 4>&2 1>"./log/network-prefixes-$HOSTNAME.log" 2>&1
+exec 3>&1 4>&2 1>"network-prefixes-$HOSTNAME.log" 2>&1
 
 PREFIXES=$(route | grep ida-gw.sysinst)
 echo "Testing that the router is destributing prefixes\n"
