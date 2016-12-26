@@ -13,21 +13,21 @@ HOSTNAME=$(hostname)
 echo $HOSTNAME
 #exec 3>&1 4>&2 1>basic-network-$HOSTNAME.log 2>&1
 IP_ADRESS=$(ifconfig eth0 | awk '/inet addr/{print substr($2,6)}')
-echo $IP_ADRESS
+echo "#$IP_ADRESS#"
 
 if [ "$IP_ADDRESS" == "130.236.178.219" ]; then
     if [ "$HOSTNAME" == "server" ]; then
 	EXTERNAL_ADRESS=$(ifconfig eth1 | awk '/inet addr/{print substr($2,6)}')
-	if [ EXTERNAL_ADDRESS == "130.236.178.25" ]; then
+	if [ "$EXTERNAL_ADDRESS" == "130.236.178.25" ]; then
 	    TEST_RESULT=okey
 	else
 	    TEST_result=fail
 	fi
-    elif [ IP_ADRESS == "130.236.178.218" && HOSTNAME == "gw" ]; then
+    elif [ "$IP_ADRESS" == "130.236.178.218" && "$HOSTNAME" == "gw" ]; then
 	TEST_RESULT=okey
-    elif [ IP_ADRESS == "130.236.178.220" && HOSTNAME == "client_1" ]; then
+    elif [ "$IP_ADRESS" == "130.236.178.220" && "$HOSTNAME" == "client_1" ]; then
 	TEST_RESULT=okey
-    elif [ IP_ADRESS == "130.236.178.221" && HOSTNAME == "client_2" ]; then
+    elif [ "$IP_ADRESS" == "130.236.178.221" && $"HOSTNAME" == "client_2" ]; then
 	TEST_RESULT=okey
     else
 	TEST_RESULT=Fail
