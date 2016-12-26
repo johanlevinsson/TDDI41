@@ -15,8 +15,8 @@ echo $HOSTNAME
 IP_ADRESS=$(ifconfig eth0 | awk '/inet addr/{print substr($2,6)}')
 echo "#$IP_ADRESS#"
 
-if [ "$IP_ADRESS" == "130.236.178.219" ]; then
-    if [ "$HOSTNAME" == "server" ]; then
+if [ "$IP_ADRESS" == "130.236.178.218" ]; then
+    if [ "$HOSTNAME" == "gw" ]; then
 	EXTERNAL_ADRESS=$(ifconfig eth1 | awk '/inet addr/{print substr($2,6)}')
 	echo "#$EXTERNAL_ADRESS#"
 	if [ "$EXTERNAL_ADRESS" == "130.236.178.25" ]; then
@@ -24,7 +24,7 @@ if [ "$IP_ADRESS" == "130.236.178.219" ]; then
 	else
 	    TEST_result=fail
 	fi
-    elif [ "$IP_ADRESS" == "130.236.178.218" && "$HOSTNAME" == "gw" ]; then
+    elif [ "$IP_ADRESS" == "130.236.178.218" && "$HOSTNAME" == "server" ]; then
 	TEST_RESULT=okey
     elif [ "$IP_ADRESS" == "130.236.178.220" && "$HOSTNAME" == "client_1" ]; then
 	TEST_RESULT=okey
