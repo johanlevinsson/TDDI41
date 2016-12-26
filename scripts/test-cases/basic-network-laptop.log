@@ -1,0 +1,4 @@
+eth0: error fetching interface information: Device not found
+##
+Hostname ip addres on laptop failed due to hostname-ip missmatch
+eth0 ip:  hostname: laptop
