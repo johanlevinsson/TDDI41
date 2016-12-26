@@ -6,8 +6,6 @@
 
 # Procedure:
 
-
-
 function print_test {
     TEST_NAME=$1
     RESULT=$2    

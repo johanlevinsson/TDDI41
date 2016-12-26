@@ -7,26 +7,34 @@
 # Procedure:
 #fail_string="[\e[1m\e[31mFAIL\e[0m]"
 
+
 function print_test {
-    pad=$(printf '%0.1s' "-"{1..60})
+    TEST_NAME=$1
+    RESULT=$2    
     padlength=40
-    fail_string="[\e[1m\e[31mFAIL\e[0m]"
-    okey_string="[\e[1m\e[92mOK\e[0m]"
-    if [ $2 == "fail" ]; then
-	printf '%s' "$1"
-	printf '%*.*s' 0 $((padlength - ${#1} )) "$pad"
-	printf "$fail_string\n"
+    pad=$(printf '%0.1s' "-"{1..60})
+    if [ "$RESULT" == "okey" ]; then
+        printf '%s' "$TEST_NAME"
+        printf '%*.*s' 0 $((padlength - ${#TEST_NAME} )) "$pad"
+        printf "[\e[1m\e[92mOK\e[0m]"  
     else
-	printf '%s' "$1"
-	printf '%*.*s' 0 $((padlength - ${#1} )) "$pad"
-	printf "$okey_string\n"       
-fi
-    
+        printf '%s' "$TEST_NAME"
+        printf '%*.*s' 0 $((padlength - ${#TEST_NAME} )) "$pad"
+        printf "[\e[1m\e[31mFAIL\e[0m]"
+    fi
 }
+
+# exec 3>&1 4>&2 1>"name_resolution-$HOSTNAME.log" 2>&1
+
+# exec 1>&3 2>&4
+# echo >&2
+
+printf "runnig local scripts on marsix \n"
+source ./dns-recursive
+source ./dns-non-recursive.sh
 
 printf "Running remote tests on router: \n"
 ssh root@gw.c4.sysinst.ida.liu.se 'bash -s' < ./master-router.sh
-
 
 printf "Running remote tests on server: \n"
 ssh root@server.c4.sysinst.ida.liu.se 'bash -s' < ./master-server.sh
