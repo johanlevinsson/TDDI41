@@ -6,6 +6,8 @@
 
 # Procedure:
 
+
+
 function print_test {
     TEST_NAME=$1
     RESULT=$2    
@@ -22,24 +24,30 @@ function print_test {
     fi
 }
 
-exec 3>&1 4>&2 1>"ntp-client-$HOSTNAME.log" 2>&1
+exec 3>&1 4>&2 1>"nis-server-$HOSTNAME.log" 2>&1
+NISPASSWD=$(ypcat passwd)
+NISMASTER=$(ypcat auto.master)
+NISHOME=$(ypcat auto.home)
 
-HOSTNAME=$(hostname)
-QUERY=$(ntpq -p | grep gw)
-if [[ -z $QUERY ]] ; then
+if [[ -z $NISMASTER ]]; then
     TEST_RESULT=fail
-    echo "ntp-client on $HOSTNAME failed"
-
-else
-    TEST_RESULT=okey
-    echo "ntp-client on $HOSTNAME okey"
+    echo "nis server test failed auto.master not filled with data"
 fi
+if [[ -z $NISHOME ]]; then
+    TEST_RESULT=fail
+    echo "nis server test failed auto.home not filled with data"
+fi
+if [[ -z $NISMPASSWD ]]; then
+    TEST_RESULT=fail
+    echo "nis server test failed passwd not filled with data"
+fi
+
 exec 1>&3 2>&4
 echo >&2
 
-print_test ntp-client $TEST_RESULT
 
-# TEST_NAME="NTP-clientp"
+print_test "Nis test" $TEST_RESULT
+# TEST_NAME="NIS-SERVER"
 # TEST_RESULT="Okey"
 
 #     if [ $TEST_RESULT == "fail" ];

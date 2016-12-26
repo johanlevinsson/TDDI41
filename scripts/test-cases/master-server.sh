@@ -10,10 +10,11 @@
 
 # exec 3>&1 4>&2 1>"name_resolution-$HOSTNAME.log" 2>&1
 # exec 1>&3 2>&4
+
 # echo >&2
 
-source /root/TDDI41/scripts/test-cases/basic-network.sh
-source /root/TDDI41/scripts/test-cases/nis-server.sh
+source /root/TDDI41/scripts/test-cases/basic-network.shb
+source /root/TDDI41/scripts/test-cases/nis.sh
 source /root/TDDI41/scripts/test-cases/ntp-client.sh
 source /root/TDDI41/scripts/test-cases/dns.sh
 printf "Leaving server\n"
