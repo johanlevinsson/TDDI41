@@ -34,11 +34,17 @@ source ./dns-recursive.sh
 source ./dns-non-recursive.sh
 source ./dns-reverse.sh
 
-printf "Running remote tests on router: \n"
+printf "\nRunning remote tests on router: \n"
 ssh root@gw.c4.sysinst.ida.liu.se 'bash -s' < ./master-router.sh
 
-printf "Running remote tests on server: \n"
+printf "\nRunning remote tests on server: \n"
 ssh root@server.c4.sysinst.ida.liu.se 'bash -s' < ./master-server.sh
+
+printf "\nRunning remote tests on client-1 \n"
+ssh root@client-1.c4.sysinst.ida.liu.se 'bash -s' < ./master-client.sh
+
+printf "\nRunning remote tests on client-2 \n"
+ssh root@client-2.c4.sysinst.ida.liu.se 'bash -s' < ./master-client.sh
 
 # printf "Running remote tests on client 1: \n"
 # ssh root@client-1.c4.sysinst.ida.liu.se 'bash -s' < /root/TDDI41/scripts/test-cases/master-client.sh

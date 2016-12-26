@@ -32,7 +32,6 @@ source /root/TDDI41/scripts/test-cases/basic-network.sh
 source /root/TDDI41/scripts/test-cases/quagga.sh
 source /root/TDDI41/scripts/test-cases/ntp-client.sh
 
-printf "Leaving router\n"
 
 
 # Expected results:
