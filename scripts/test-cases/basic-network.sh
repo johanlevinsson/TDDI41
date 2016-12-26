@@ -11,7 +11,17 @@
 
 # HOSTNAME=hostname
 
-printf "Testing hostname [\e[1m\e[92mOK\e[0m]\n"
+TEST_NAME="Hostname"
+TEST_RESULT="Okey"
+
+    if [ $TEST_RESULT == "fail" ];
+	printf '%s' "$TEST_NAME"
+	printf '%*.*s' 0 $((padlength - ${#TEST_NAME} )) "$pad"
+	printf "[\e[1m\e[31mFAIL\e[0m]\n"
+    else
+	printf '%s' "$TEST_NAME"
+	printf '%*.*s' 0 $((padlength - ${#TEST_NAME} )) "$pad"
+	printf "[\e[1m\e[92mOK\e[0m]$okey_string\n"  
 
 # if [ $HOSTNAME -eq "client-1" OR $HOSTNAME -eq "client-2" OR $HOSTNAME -eq "server" OR $HOSTNAME -eq "gw"  ] ; then
 #     print_test "Testing hostname" okey
