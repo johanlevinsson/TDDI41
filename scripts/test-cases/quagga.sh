@@ -13,13 +13,13 @@ function print_test {
     padlength=40
     pad=$(printf '%0.1s' "-"{1..60})
     if [ "$RESULT" == "okey" ]; then
-	echo '%s' "$TEST_NAME"
-	echo '%*.*s' 0 $((padlength - ${#TEST_NAME} )) "$pad"
-	echo "[\e[1m\e[92mOK\e[0m]\n"  
+	printf '%s' "$TEST_NAME"
+	printf '%*.*s' 0 $((padlength - ${#TEST_NAME} )) "$pad"
+	printf "[\e[1m\e[92mOK\e[0m]\n"  
     else
-	echo '%s' "$TEST_NAME"
-	echo '%*.*s' 0 $((padlength - ${#TEST_NAME} )) "$pad"
-	echo "[\e[1m\e[31mFAIL\e[0m]\n"
+	printf '%s' "$TEST_NAME"
+	printf '%*.*s' 0 $((padlength - ${#TEST_NAME} )) "$pad"
+	printf "[\e[1m\e[31mFAIL\e[0m]\n"
     fi
 }
 

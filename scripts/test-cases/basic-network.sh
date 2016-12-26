@@ -74,7 +74,7 @@ print_test "Hostname- and ip-configuration" $TEST_RESULT
 
 # Test name resolution ping www.google.se
 
-exec 3>&1 4>&2 1>basic-network-$HOSTNAME.log 2>&1
+exec 3>&1 4>&2 1>"basic-network-$HOSTNAME.log" 2>&1
 PING=$(ping -c 1 -n www.google.se | grep '0% packet loss')
 if [[ -z $PING ]] ; then
     TEST_RESULT=fail
