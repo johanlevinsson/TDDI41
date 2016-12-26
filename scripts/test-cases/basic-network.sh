@@ -67,8 +67,8 @@ else
 fi
 
 exec 1>&3 2>&4
-"echo >&2 "
-echo $TEST_RESULT
+echo >&2 
+"echo $TEST_RESULT
 print_test "Basic network" $TEST_RESULT
 
 # Test name resolution ping www.google.se
