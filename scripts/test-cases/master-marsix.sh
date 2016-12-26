@@ -25,7 +25,7 @@ fi
 }
 
 printf "Running remote tests on router: \n"
-ssh root@gw.c4.sysinst.ida.liu.se 'bash -s' < /root/TDDI41/scripts/test-cases/master-router.sh
+ssh root@gw.c4.sysinst.ida.liu.se 'bash -s' < ./master-router.sh
 
 
 printf "Running remote tests on server: \n"
