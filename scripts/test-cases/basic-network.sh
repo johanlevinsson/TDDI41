@@ -29,7 +29,7 @@ function print_test {
 HOSTNAME=$(hostname)
 echo $HOSTNAME
 #exec 3>&1 4>&2 1>basic-network-$HOSTNAME.log 2>&1
-IP_ADRESS=$(ifconfig wlp4s0 | awk '/inet addr/{print substr($2,6)}')
+IP_ADRESS=$(ifconfig eth0 | awk '/inet addr/{print substr($2,6)}')
 echo "#$IP_ADRESS#"
 
 if [ "$IP_ADRESS" == "130.236.178.218" ]; then
