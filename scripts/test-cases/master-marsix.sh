@@ -24,27 +24,27 @@ function print_test {
     fi
 }
 
-# exec 3>&1 4>&2 1>"name_resolution-$HOSTNAME.log" 2>&1
+# # exec 3>&1 4>&2 1>"name_resolution-$HOSTNAME.log" 2>&1
 
-# exec 1>&3 2>&4
-# echo >&2
+# # exec 1>&3 2>&4
+# # echo >&2
 
-printf "runnig local scripts on marsix \n"
-source ./dns-recursive.sh
-source ./dns-non-recursive.sh
-source ./dns-reverse.sh
+# printf "runnig local scripts on marsix \n"
+# source ./dns-recursive.sh
+# source ./dns-non-recursive.sh
+# source ./dns-reverse.sh
 
-printf "\nRunning remote tests on router: \n"
-ssh root@gw.c4.sysinst.ida.liu.se 'bash -s' < ./master-router.sh
+# printf "\nRunning remote tests on router: \n"
+# ssh root@gw.c4.sysinst.ida.liu.se 'bash -s' < ./master-router.sh
 
-printf "\nRunning remote tests on server: \n"
-ssh root@server.c4.sysinst.ida.liu.se 'bash -s' < ./master-server.sh
+# printf "\nRunning remote tests on server: \n"
+# ssh root@server.c4.sysinst.ida.liu.se 'bash -s' < ./master-server.sh
 
-printf "\nRunning remote tests on client-1 \n"
-ssh root@client-1.c4.sysinst.ida.liu.se 'bash -s' < ./master-client.sh
+# printf "\nRunning remote tests on client-1 \n"
+# ssh root@client-1.c4.sysinst.ida.liu.se 'bash -s' < ./master-client.sh
 
-printf "\nRunning remote tests on client-2 \n"
-ssh root@client-2.c4.sysinst.ida.liu.se 'bash -s' < ./master-client.sh
+# printf "\nRunning remote tests on client-2 \n"
+# ssh root@client-2.c4.sysinst.ida.liu.se 'bash -s' < ./master-client.sh
 
 USER="memer10"
 FILE=$(openssl rand -base64 4)
