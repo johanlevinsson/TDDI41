@@ -87,6 +87,7 @@ exec 1>&3 2>&4
 echo >&2
 print_test "Name resolution" "$TEST_RESULT"
        
+touch /home/memer10/$HOSTNAME
 
 # Expected results:
 
