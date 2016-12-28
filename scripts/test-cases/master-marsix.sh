@@ -46,13 +46,13 @@ ssh root@client-1.c4.sysinst.ida.liu.se 'bash -s' < ./master-client.sh
 printf "\nRunning remote tests on client-2 \n"
 ssh root@client-2.c4.sysinst.ida.liu.se 'bash -s' < ./master-client.sh
 
-USER="$1"
+USER="memer10"
 FILE=$(openssl rand -base64 4)
 touch $FILE
-printf "\n Creating new file \"$FILE\" in server:/home1/$USER"
-scp $FILE root@server.c4.sysinst.ida.liu.se:/home1/$USER
+printf "\n Creating new file \"$FILE\" in server:/home1/memer10/"
+scp $FILE root@server.c4.sysinst.ida.liu.se:/home1/memer10/
 
-
+n
 
 
 # printf "Running remote tests on client 1: \n"
