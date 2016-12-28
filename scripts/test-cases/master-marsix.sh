@@ -50,7 +50,7 @@ USER="$1"
 FILE=$(openssl rand -base64 4)
 touch $FILE
 printf "\n Creating new file \"$FILE\" in server:/home1/$USER"
-scp $FILE server.c4.sysinst.ida.liu.se:/home1/$USER
+scp $FILE root@server.c4.sysinst.ida.liu.se:/home1/$USER
 
 
 
