@@ -30,8 +30,7 @@ function print_test {
 # # echo >&2
 
 # printf "runnig local scripts on marsix \n"
-# source ./dns-recursive.sh
-# source ./dns-non-recursive.sh
+# source ./dns-recursive.sh# source ./dns-non-recursive.sh
 # source ./dns-reverse.sh
 
 # printf "\nRunning remote tests on router: \n"
@@ -46,20 +45,12 @@ function print_test {
 # printf "\nRunning remote tests on client-2 \n"
 # ssh root@client-2.c4.sysinst.ida.liu.se 'bash -s' < ./master-client.sh
 
-USER="memer10"
-FILE=$(openssl rand -base64 4)
-touch $FILE
-printf "\n Creating new file \"$FILE\" in server:/home1/memer10/"
-scp $FILE root@server.c4.sysinst.ida.liu.se:/home1/memer10/
 
-n
+printf "Running remote tests on client 1: \n"
+ssh root@client-1.c4.sysinst.ida.liu.se 'bash -s' < /root/TDDI41/scripts/test-cases/master-client.sh
 
-
-# printf "Running remote tests on client 1: \n"
-# ssh root@client-1.c4.sysinst.ida.liu.se 'bash -s' < /root/TDDI41/scripts/test-cases/master-client.sh
-
-# printf "Running remote tests on client 2: \n"
-# ssh root@client-2.c4.sysinst.ida.liu.se 'bash -s' < /root/TDDI41/scripts/test-cases/master-client.sh
+printf "Running remote tests on client 2: \n"
+ssh root@client-2.c4.sysinst.ida.liu.se 'bash -s' < /root/TDDI41/scripts/test-cases/master-client.sh
 
 # echo "Test driver: \n"
 # echo "Testing client 1: \n"
