@@ -15,7 +15,7 @@
 # 6. Output the username and password on a single line
 
 USER_NUM=$(cut -d: -f1 /etc/passwd | grep memer | tail -1 | tr -cd '[[:digit:]]')
-printf $USER_NUM
+echo $USER_NUM
 
 if [ -z "$USER_NUM" ]; then
     NEXT_USER="memer1"
@@ -26,21 +26,27 @@ fi
 
 # Calculate username and create user
 
-adduser --home /home.1/$NEW_USER --disabled-password --gecos "" $NEW_USER
+#adduser --home /home.1/$NEW_USER --disabled-password --gecos "" $NEW_USER
+NEW_USER="MEMER7"
 
 # Generate and set password
-PASSWORD=$(openssl rand -base64 8)
-echo "$:NEW_USER:$PASSWD" | chpasswd
-
-
+if [ "$1" == "-no-password" ]; then
+    PASSWORD="empty"
+else
+    
+    echo "$:NEW_USER:$PASSWD" | chpasswd
+fi
+    
 # Add home-folder to autofs
-echo "$NEW_USER -fstype=nfs,vers=3 server.c4.sysinst.ida.liu.se:/home.1/&" >> /etc/auto.home
+#echo "$NEW_USER -fstype=nfs,vers=3 server.c4.sysinst.ida.liu.se:/home.1/&" >> /etc/auto.home
 
 #Update nis maps
-make -C /var/yp/
+#make -C /var/yp/
 
 #Print info
-printf "User: $NEW_USER added with password: $PASSWORD"
+echo "Added User: "
+echo "$NEW_USER "
+echo "$PASSWORD"
 
 
 
