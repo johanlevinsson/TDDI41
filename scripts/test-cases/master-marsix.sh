@@ -18,7 +18,7 @@ function print_test {
         printf '%*.*s' 0 $((padlength - ${#TEST_NAME} )) "$pad"
         printf "[\e[1m\e[92mOK\e[0m]\n"  
     else
-        printf '%s' "$TEST_NAME"
+        printf '%s' "$TEST_NAME"ss
         printf '%*.*s' 0 $((padlength - ${#TEST_NAME} )) "$pad"
         printf "[\e[1m\e[31mFAIL\e[0m]\n"
     fi
@@ -29,15 +29,16 @@ function print_test {
 # # exec 1>&3 2>&4
 # # echo >&2
 
-# printf "runnig local scripts on marsix \n"
-# source ./dns-recursive.sh# source ./dns-non-recursive.sh
-# source ./dns-reverse.sh
+printf "runnig local scripts on marsix \n"
+source ./dns-non-recursive.sh
+source ./dns-recursive.sh
+source ./dns-reverse.sh
 
-# printf "\nRunning remote tests on router: \n"
-# ssh root@gw.c4.sysinst.ida.liu.se 'bash -s' < ./master-router.sh
+printf "\nRunning remote tests on router: \n"
+ssh root@gw.c4.sysinst.ida.liu.se 'bash -s' < ./master-router.sha
 
-# printf "\nRunning remote tests on server: \n"
-# ssh root@server.c4.sysinst.ida.liu.se 'bash -s' < ./master-server.sh
+printf "\nRunning remote tests on server: \n"
+ssh root@server.c4.sysinst.ida.liu.se 'bash -s' < ./master-server.sh
 
 printf "\nRunning remote tests on client-1 \n"
 ssh root@client-1.c4.sysinst.ida.liu.se 'bash -s' < ./master-client.sh

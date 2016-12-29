@@ -21,7 +21,7 @@
 #     fi
 # }
 
-exec 3>&1 4>&2 1>"dns-reverse-$HOSTNAME.log" 2>&1
+#exec 3>&1 4>&2 1>"dns-reverse-$HOSTNAME.log" 2>&1
 
 CLIENT1=$(dig -x 130.236.178.220 +short)
 CLIENT2=$(dig -x 130.236.178.221 +short)
@@ -47,8 +47,8 @@ if [ "$ROUTER" == "218.216/29.178.236.130.in-addr.arpa." ]; then
     echo "Non recursive query gw okey"
 fi
     
-exec 1>&3 2>&4
-echo >&2
+# exec 1>&3 2>&4
+# echo >&2
 
 print_test "Reverse  DNS gw" "$ROUTER"
 printf "\n"

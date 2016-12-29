@@ -22,7 +22,7 @@
 #     fi
 # }
 
-exec 3>&1 4>&2 1>"ntp-client-$HOSTNAME.log" 2>&1
+# exec 3>&1 4>&2 1>"ntp-client-$HOSTNAME.log" 2>&1
 
 HOSTNAME=$(hostname)
 QUERY=$(ntpq -p | grep gw)
@@ -34,8 +34,8 @@ else
     TEST_RESULT=okey
     echo "ntp-client on $HOSTNAME okey"
 fi
-exec 1>&3 2>&4
-echo >&2
+# exec 1>&3 2>&4
+# echo >&2
 
 print_test ntp-client $TEST_RESULT
 

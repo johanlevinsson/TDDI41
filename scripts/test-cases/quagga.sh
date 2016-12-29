@@ -24,7 +24,7 @@
 # }
 
 
-exec 3>&1 4>&2 1>"network-prefixes-$HOSTNAME.log" 2>&1
+#exec 3>&1 4>&2 1>"network-prefixes-$HOSTNAME.log" 2>&1
 
 PREFIXES=$(route | grep ida-gw.sysinst)
 echo "Testing that the router is destributing prefixes\n"
@@ -35,8 +35,8 @@ else
     echo "Network prefixes accepted:\n$PREFIXES"
     TEST_RESULT=okey
 fi
-exec 1>&3 2>&4
-echo >&2
+# exec 1>&3 2>&4
+# echo >&2
 
 print_test "Network Prefixes" $TEST_RESULT
 

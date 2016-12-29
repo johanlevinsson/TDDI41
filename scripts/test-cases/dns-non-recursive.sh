@@ -21,7 +21,7 @@
 #     fi
 # }
 
-exec 3>&1 4>&2 1>"dns-non-recursive-$HOSTNAME.log" 2>&1
+#exec 3>&1 4>&2 1>"dns-non-recursive-$HOSTNAME.log" 2>&1
 
 CLIENT1=$(dig +short client-1.c4.sysinst.ida.liu.se @server.c4.sysinst.ida.liu.se)
 CLIENT2=$(dig +short client-2.c4.sysinst.ida.liu.se @server.c4.sysinst.ida.liu.se)
@@ -47,8 +47,8 @@ if [ "$ROUTER" == "130.236.178.218" ]; then
     echo "Non recursive query gw okey"
 fi
     
-exec 1>&3 2>&4
-echo >&2
+# exec 1>&3 2>&4
+# echo >&2
 
 print_test "Non recursive DNS gw" "$ROUTER"
 printf "\n"

@@ -31,6 +31,7 @@ function print_test {
 source /root/TDDI41/scripts/test-cases/basic-network.sh
 source /root/TDDI41/scripts/test-cases/nis.sh
 source /root/TDDI41/scripts/test-cases/ntp-client.sh
+source /root/TDDI41/scripts/test-cases/automount-client.sh
 #source /root/TDDI41/scripts/test-cases/dns.sh
 
 

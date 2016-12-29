@@ -31,7 +31,7 @@
 
 HOSTNAME=$(hostname)
 
-exec 3>&1 4>&2 1>"basic-network-$HOSTNAME.log" 2>&1
+#exec 3>&1 4>&2 1>"basic-network-$HOSTNAME.log" 2>&1
 IP_ADRESS=$(ifconfig eth0 | awk '/inet addr/{print substr($2,6)}')
 echo "#$IP_ADRESS#"
 
@@ -67,8 +67,8 @@ else
     fi
 fi
 
-exec 1>&3 2>&4
-echo >&2 
+#exec 1>&3 2>&4
+#echo >&2 
 #echo $TEST_RESULT
 print_test "Hostname- and ip-configuration" $TEST_RESULT
 

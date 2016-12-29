@@ -23,7 +23,7 @@ function print_test {
 }
 
 
-exec 3>&1 4>&2 1>"recursive-dns-$HOSTNAME.log" 2>&1
+#exec 3>&1 4>&2 1>"recursive-dns-$HOSTNAME.log" 2>&1
 HOSTNAME=$(hostname)
 QUERY=$(dig client-1.c4.sysinst.ida.liu.se @server.c4.sysinst.ida.liu.se | grep WARNING)
 if [[ -z $QUERY ]] && [ "$HOSTNAME" == "marsix"] ; then
@@ -37,8 +37,8 @@ else
     echo "Recursive queries okey"
 fi
 
-exec 1>&3 2>&4
-echo >&2
+# exec 1>&3 2>&4
+# echo >&2
 
 print_test "Recursive DNS query" "$TEST_RESULT"
 
