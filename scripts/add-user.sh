@@ -38,10 +38,10 @@ else
 fi
     
 # Add home-folder to autofs
-#echo "$NEW_USER -fstype=nfs,vers=3 server.c4.sysinst.ida.liu.se:/home.1/&" >> /etc/auto.home
+echo "$NEW_USER -fstype=nfs,vers=3 server.c4.sysinst.ida.liu.se:/home.1/&" >> /etc/auto.home
 
 #Update nis maps
-#make -C /var/yp/
+make -C /var/yp/
 
 #Print info
 echo "Added User: "
