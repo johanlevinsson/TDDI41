@@ -29,9 +29,17 @@ NISPASSWD=$(ypcat passwd)
 NISMASTER=$(ypcat auto.master)
 NISHOME=$(ypcat auto.home)
 
-if [[ -z $NISMASTER ]] || [[ -z $NIMASTER ]] || [[ -z $NISPASSWD ]]; then
+if [[ -z $NISMASTER ]]; then
     TEST_RESULT=fail
-    echo "nis server test failed one of the maps is not filled with data"
+    echo "nis server test failed auto.master is not filled with data"
+
+elif [[ -z $NISHOME ]];  then
+    TEST_RESULT=fail
+    echo "nis server test failed auto.HOME not filled with data" 
+
+elif [[ -z $NISPASSWD ]]; then
+    TEST_RESULT=fail
+    echo "nis server test failed passwd not filled with data"
 else
     TEST_RESULT=okey
     echo "nis server test okey"
