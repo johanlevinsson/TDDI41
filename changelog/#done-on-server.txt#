@@ -2,6 +2,11 @@
 ##Done on server##
 ##################
 
+installed packaged
+*****************
+apt-get install bind9
+apt-get install openssh-server
+
 Set hostname
 ************
 
@@ -23,13 +28,14 @@ iface eth0 inet static
     netmask 225.225.225.248
     gateway 130.236.178.218
 
-Name resolution: Edited /etc/resolv.conf
-****************************************
+
 domain ida.liu.se
 search ida.liu.se
-nameserver 130.236.1.9
 nameserver 130.236.186.13
 nameserver 130.236.186.16
+root@client-
+
+
 
 
 Edited /etc/nsswitch

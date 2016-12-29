@@ -1,0 +1,29 @@
+### NIS installation
+
+1. Installing the nis server
+
+apt-get install nis
+
+2. add fully qualified domain names for all machines in /etc/hosts
+
+3. /etc/default/nis
+
+NISSERVER=master
+NISCLIENT=false //maby change lf
+
+4. edit /var/yp/Makefile
+
+comment out the maps we dont want
+
+5. run /usr/lib/yp/ypinit -m
+
+/usr/lib/yp/ypinit -m
+
+### on clients
+
+1. Install nis, netbase, netstd
+
+added nis in /etc/nsswitch.conf
+
+
+ 

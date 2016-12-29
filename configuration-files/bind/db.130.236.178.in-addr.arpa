@@ -1,13 +1,18 @@
+backup     db.130.236.178.in-addr.arpa  db.local                  named.conf.local
+bind.keys  db.255                       db.root                   named.conf.options
+db.0       db.c4.sysinst.ida.liu.se     named.conf                rndc.key
+db.127     db.empty                     named.conf.default-zones  zones.rfc1918
+root@server:/etc/bind# cat db.130.236.178.in-addr.arpa 
 $TTL 30 
 
 @  IN SOA server.c4.sysinst.ida.liu.se. eripe320.student.liu.se. (
-141101
+200001
 30
 30
 30
 30
  )
-  @                             IN NS  server.c4.sysinst.ida.liu.se.
+@                             IN NS  server.c4.sysinst.ida.liu.se.
 
 218  IN PTR gw.c4.sysinst.ida.liu.se.
 219  IN PTR server.c4.sysinst.ida.liu.se.

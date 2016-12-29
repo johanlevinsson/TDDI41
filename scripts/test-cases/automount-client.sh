@@ -26,6 +26,8 @@ function print_test {
 exec 3>&1 4>&2 1>"name_resolution-$HOSTNAME.log" 2>&1
 exec 1>&3 2>&4
 
+touch /home/memer10/hej.txt
+
 echo >&2
 
 

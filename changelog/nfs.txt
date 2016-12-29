@@ -1,0 +1,7 @@
+# Installing nfs server
+
+apt-get install nfs-kernel-server
+
+
+# Install nfs common on clients
+apt-get install nfs-common

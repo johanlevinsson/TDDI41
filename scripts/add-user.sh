@@ -26,9 +26,9 @@ fi
 
 # Calculate username and create user
 
-#adduser --home /home.1/$NEW_USER --disabled-password --gecos "" $NEW_USER
-NEW_USER="MEMER7"
-
+adduser --home /home.1/$NEW_USER --disabled-password --gecos "" $NEW_USER
+#NEW_USER="MEMER7"
+usermod -d /home/$NEW_USER $NEW_USER
 # Generate and set password
 if [ "$1" == "-no-password" ]; then
     PASSWORD="empty"

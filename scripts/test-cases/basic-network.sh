@@ -51,11 +51,11 @@ else
 	TEST_RESULT=okey
 	echo "Basic network connectivity on $HOSTNAME correct\n"
 	echo "eth0 ip: $IP_ADRESS hostname: $HOSTNAME\n"
-    elif [ "$IP_ADRESS" == "130.236.178.220" ] && [ "$HOSTNAME" == "client_1" ]; then
+    elif [ "$IP_ADRESS" == "130.236.178.220" ] && [ "$HOSTNAME" == "client-1" ]; then
 	TEST_RESULT=okey
 	echo "Basic network connectivity on $HOSTNAME correct\n"
 	echo "eth0 ip: $IP_ADRESS hostname: $HOSTNAME\n"
-    elif [ "$IP_ADRESS" == "130.236.178.221" ] && [ "$HOSTNAME" == "client_2" ]; then
+    elif [ "$IP_ADRESS" == "130.236.178.221" ] && [ "$HOSTNAME" == "client-2" ]; then
 	TEST_RESULT=okey
 	echo "Basic network connectivity on $HOSTNAME correct\n"
 	echo "eth0 ip: $IP_ADRESS hostname: $HOSTNAME\n"
@@ -87,7 +87,7 @@ exec 1>&3 2>&4
 echo >&2
 print_test "Name resolution" "$TEST_RESULT"
        
-touch /home/memer10/$HOSTNAME
+# touch /home/memer10/$HOSTNAME
 
 # Expected results:
 
