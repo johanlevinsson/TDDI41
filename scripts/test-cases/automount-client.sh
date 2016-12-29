@@ -23,12 +23,23 @@ function print_test {
     fi
 }
 
-exec 3>&1 4>&2 1>"name_resolution-$HOSTNAME.log" 2>&1
-exec 1>&3 2>&4
+HOSTNAME=$(hostname)
+#exec 3>&1 4>&2 1>"automount-$HOSTNAME.log" 2>&1
+#exec 1>&3 2>&4
 
+
+#echo >&2
+
+FILE=$(openssl rand -base64 8)
+echo "copying random generated file client-1$FILE client-2$FILE to clients\n"
+scp memer10@client-1.c4.sysinst.ida.liu.se 'touch client-1$FILE'
+scp memer10@client-2.c4.sysinst.ida.liu.se 'touch client-2$FILE'
+
+LSRESULT=$(ls /home.1/memer10 | grep $FILE)
+ls /home.1/memer10 | grep $FILE
+
+
+ssh memer10@client-1.c4
 touch /home/memer10/hej.txt
-
-echo >&2
-
 
 # Expected results:
