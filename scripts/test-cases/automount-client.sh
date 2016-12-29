@@ -30,20 +30,18 @@ HOSTNAME=$(hostname)
 
 #echo >&2
 
-FILE=$(openssl rand -base64 8)
-echo "copying random generated file client-1$FILE client-2$FILE to clients\n"
-ssh memer10@client-1.c4.sysinst.ida.liu.se 'touch client-1$FILE'
-ssh memer10@client-2.c4.sysinst.ida.liu.se 'touch client-2$FILE'
+echo "copying client-1 client-2 clients\n"
+ssh memer10@client-1.c4.sysinst.ida.liu.se 'touch client-1'
+ssh memer10@client-2.c4.sysinst.ida.liu.se 'touch client-2'
 
-LSRESULT=$(ls /home.1/memer10 | grep $FILE)
-ls /home.1/memer10 | grep $FILE
-LINE_NO=$(ls /home.1/memer10/ | grep "$FILE" | wc -l)
+LINE_NO=$(ls /home.1/memer10 | grep client | wc -l)
 echo $LINE_NO
 if [ "$LINE_NO" == "2" ]; then
     TEST_RESULT=okey
 else
     TEST_RESULT=fail
 fi
-
+echo "Removing files"
+rm /home.1/memer10/client*
 print_test "automount test" "$TEST_RESULT"
 # Expected results:
