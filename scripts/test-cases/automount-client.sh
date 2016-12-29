@@ -38,7 +38,7 @@ ssh memer10@client-2.c4.sysinst.ida.liu.se 'touch client-2$FILE'
 LSRESULT=$(ls /home.1/memer10 | grep $FILE)
 ls /home.1/memer10 | grep $FILE
 LINE_NO=$(ls /home.1/memer10/ | grep "$FILE" | wc -l)
-if [ -eq $LINE_NO 2 ]; then
+if [ "$LINE_NO" == "2" ]; then
     TEST_RESULT=okey
 else
     TEST_RESULT=fail
