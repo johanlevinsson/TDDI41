@@ -27,19 +27,18 @@ function print_test {
 HOSTNAME=$(hostname)
 QUERY=$(dig client-1.c4.sysinst.ida.liu.se @server.c4.sysinst.ida.liu.se | grep WARNING)
 if [[ -z $QUERY ]] && [ "$HOSTNAME" == "marsix"] ; then
-    TEST_RESULT=okey
-    echo "Recursive OKEY: The server does not accept recursive queries from outside the network\n"
+    TEST_RESULT=okey   
 elif [[ -z $QUERY ]] && [ "$HOSTNAME" != "marsix"] ; then
     TEST_RESULT=fail
     echo "Recursive test FAIL: the server does not accept recursive queries from inside the network\n"
 else
     TEST_RESULT=okey
-    echo "Recursive queries okey"
+    
 fi
 
 # exec 1>&3 2>&4
 # echo >&2
 
 print_test "Recursive DNS query" "$TEST_RESULT"
-
+printf "\n"
 # Expected results:
