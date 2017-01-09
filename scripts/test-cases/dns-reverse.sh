@@ -30,27 +30,23 @@ ROUTER=$(dig -x 130.236.178.218 +short)
 
 if [ "$CLIENT1" == "220.216/29.178.236.130.in-addr.arpa." ]; then
     CLIENT1=okey
-    echo "Non recursive query client-1 okey"
 fi
 
 if [ "$CLIENT2" == "221.216/29.178.236.130.in-addr.arpa." ]; then
     CLIENT2=okey
-    echo "Non recursive query client-2 okey"
 fi
 
 if [ "$SERVER" == "219.216/29.178.236.130.in-addr.arpa." ]; then
     SERVER=okey
-    echo "Non recursive query server okey"
 fi
 if [ "$ROUTER" == "218.216/29.178.236.130.in-addr.arpa." ]; then
     ROUTER=okey
-    echo "Non recursive query gw okey"
 fi
     
 # exec 1>&3 2>&4
 # echo >&2
 
-print_test "Reverse  DNS gw" "$ROUTER"
+print_test "Reverse DNS gw" "$ROUTER"
 printf "\n"
 print_test "Reverse DNS server" "$SERVER"
 printf "\n"
