@@ -27,7 +27,6 @@
 #exec 3>&1 4>&2 1>"network-prefixes-$HOSTNAME.log" 2>&1
 
 PREFIXES=$(route | grep ida-gw.sysinst)
-echo "Testing that the router is destributing prefixes\n"
 if [[ -z $PREFIXES ]]; then
     echo "ERROR: no network prefixes found in routing table"
     TEST_RESULT=fail
