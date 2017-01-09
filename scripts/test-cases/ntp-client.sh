@@ -32,7 +32,6 @@ if [[ -z $QUERY ]] ; then
 
 else
     TEST_RESULT=okey
-    echo "ntp-client on $HOSTNAME okey"
 fi
 # exec 1>&3 2>&4
 # echo >&2

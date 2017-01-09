@@ -42,7 +42,6 @@ elif [[ -z $NISPASSWD ]]; then
     echo "nis server test failed passwd not filled with data"
 else
     TEST_RESULT=okey
-    echo "nis server test okey"
 fi
 
 

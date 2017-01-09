@@ -32,13 +32,12 @@ if [[ -z $PREFIXES ]]; then
     echo "ERROR: no network prefixes found in routing table"
     TEST_RESULT=fail
 else
-    echo "Network prefixes accepted:\n$PREFIXES"
     TEST_RESULT=okey
 fi
 # exec 1>&3 2>&4
 # echo >&2
 
 print_test "Network Prefixes" $TEST_RESULT
-
+printf "\n"
 
 # Expected results:
