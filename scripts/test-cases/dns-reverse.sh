@@ -1,27 +1,10 @@
 #!/bin/bash
 
-# ID:
-# Purpose:
-# Preconditions
+# ID: 4
+# Purpose: tests that reverse queries from outside the network works
+# Preconditions: basic network, routing and dns and ssh-keys set up
 
 # Procedure:
-# function print_test {
-#     TEST_NAME=$1
-#     RESULT=$2    
-#     padlength=40
-#     pad=$(printf '%0.1s' "-"{1..60})
-#     if [ "$RESULT" == "okey" ]; then
-#         printf '%s' "$TEST_NAME"
-#         printf '%*.*s' 0 $((padlength - ${#TEST_NAME} )) "$pad"
-#         printf "[\e[1m\e[92mOK\e[0m]"  
-#     else
-#         printf '%s' "$TEST_NAME"
-#         printf '%*.*s' 0 $((padlength - ${#TEST_NAME} )) "$pad"
-#         printf "[\e[1m\e[31mFAIL\e[0m]"
-#     fi
-# }
-
-#exec 3>&1 4>&2 1>"dns-reverse-$HOSTNAME.log" 2>&1
 
 CLIENT1=$(dig -x 130.236.178.220 +short)
 CLIENT2=$(dig -x 130.236.178.221 +short)
@@ -42,9 +25,6 @@ fi
 if [ "$ROUTER" == "218.216/29.178.236.130.in-addr.arpa." ]; then
     ROUTER=okey
 fi
-    
-# exec 1>&3 2>&4
-# echo >&2
 
 print_test "Reverse DNS gw" "$ROUTER"
 printf "\n"

@@ -1,7 +1,7 @@
 #!/bin/bash
 
 # ID: 1
-# Purpose: Call all the test cases from the server.
+# Purpose: Call all the test cases from the marsix
 # Preconditions: SSH keys setup for all machines and up to date git repo
 
 # Procedure:
@@ -24,27 +24,22 @@ function print_test {
     fi
 }
 
-# # exec 3>&1 4>&2 1>"name_resolution-$HOSTNAME.log" 2>&1
-
-# # exec 1>&3 2>&4
-# # echo >&2
-
 printf "runnig local scripts on marsix \n"
-source ./dns-non-recursive.sh
-source ./dns-recursive.sh
-source ./dns-reverse.sh
+source ./dns-non-recursive.sh #2
+source ./dns-recursive.sh #3
+source ./dns-reverse.sh #4
 
 printf "\nRunning remote tests on router: \n"
-ssh root@gw.c4.sysinst.ida.liu.se 'bash -s' < ./master-router.sh
+ssh root@gw.c4.sysinst.ida.liu.se 'bash -s' < ./master-router.sh #5
 
 printf "\nRunning remote tests on server: \n"
-ssh root@server.c4.sysinst.ida.liu.se 'bash -s' < ./master-server.sh
+ssh root@server.c4.sysinst.ida.liu.se 'bash -s' < ./master-server.sh #6
 
 printf "\nRunning remote tests on client-1 \n"
-ssh root@client-1.c4.sysinst.ida.liu.se 'bash -s' < ./master-client.sh
+ssh root@client-1.c4.sysinst.ida.liu.se 'bash -s' < ./master-client.sh #7
 
 printf "\nRunning remote tests on client-2 \n"
-ssh root@client-2.c4.sysinst.ida.liu.se 'bash -s' < ./master-client.sh
+ssh root@client-2.c4.sysinst.ida.liu.se 'bash -s' < ./master-client.sh #7
 
 
 # printf "Running remote tests on client 1: \n"

@@ -1,17 +1,12 @@
 #!/bin/bash
 
-# ID: 1
-# Purpose: Test all aspects from marsix
+# ID: 6
+# Purpose: Test all tests on server
 # Preconditions
 # Lab series completed
 
 # Procedure:
 
-
-# exec 3>&1 4>&2 1>"name_resolution-$HOSTNAME.log" 2>&1
-# exec 1>&3 2>&4
-
-# echo >&2
 function print_test {
     TEST_NAME=$1
     RESULT=$2    
@@ -31,10 +26,6 @@ function print_test {
 source /root/TDDI41/scripts/test-cases/basic-network.sh
 source /root/TDDI41/scripts/test-cases/nis.sh
 source /root/TDDI41/scripts/test-cases/ntp-client.sh
-#source /root/TDDI41/scripts/test-cases/automount-client.sh
-#source /root/TDDI41/scripts/test-cases/dns.sh
-
-
 
 # Expected results:
 

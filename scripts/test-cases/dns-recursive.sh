@@ -1,8 +1,10 @@
 #!/bin/bash
 
-# ID:
-# Purpose:
-# Preconditions
+# ID: 2
+# Purpose: test to se that the dns server does not accepts recursive calls
+# from outside the network
+
+# Preconditions: Basic network routing and dns labs complete and ssh-keys setup
 
 # Procedure:
 
@@ -22,8 +24,6 @@ function print_test {
     fi
 }
 
-
-#exec 3>&1 4>&2 1>"recursive-dns-$HOSTNAME.log" 2>&1
 HOSTNAME=$(hostname)
 QUERY=$(dig client-1.c4.sysinst.ida.liu.se @server.c4.sysinst.ida.liu.se | grep WARNING)
 if [[ -z $QUERY ]] && [ "$HOSTNAME" == "marsix"] ; then
@@ -36,9 +36,6 @@ else
     
 fi
 
-# exec 1>&3 2>&4
-# echo >&2
-
 print_test "Recursive DNS query" "$TEST_RESULT"
 printf "\n"
-# Expected results:
+# Expected results: all green okeys

@@ -1,37 +1,15 @@
 #!/bin/bash
 
-# ID: 2
+# ID: 9
 # Purpose: Test basic network configuration and name resolution
 # Preconditions:
 # First part of net lab completed
-
-
 # Procedure:
-#!/bin/bash
-
-
-# function print_test {
-#     TEST_NAME=$1
-#     RESULT=$2    
-#     padlength=40
-#     pad=$(printf '%0.1s' "-"{1..60})
-#     if [ "$RESULT" == "okey" ]; then
-#         printf '%s' "$TEST_NAME"
-#         printf '%*.*s' 0 $((padlength - ${#TEST_NAME} )) "$pad"
-#         printf "[\e[1m\e[92mOK\e[0m]"  
-#     else
-#         printf '%s' "$TEST_NAME"
-#         printf '%*.*s' 0 $((padlength - ${#TEST_NAME} )) "$pad"
-#         printf "[\e[1m\e[31mFAIL\e[0m]"
-#     fi
-# }
-
 
 # Test hostname and ip: compare hostname with ip
 
 HOSTNAME=$(hostname)
 
-#exec 3>&1 4>&2 1>"basic-network-$HOSTNAME.log" 2>&1
 IP_ADRESS=$(ifconfig eth0 | awk '/inet addr/{print substr($2,6)}')
 
 if [ "$IP_ADRESS" == "130.236.178.218" ] && [ "$HOSTNAME" == "gw" ]; then
@@ -57,9 +35,6 @@ else
     fi
 fi
 
-#exec 1>&3 2>&4
-#echo >&2 
-#echo $TEST_RESULT
 print_test "Hostname- and ip-configuration" $TEST_RESULT
 printf "\n"
 # Test name resolution ping www.google.se
@@ -76,8 +51,6 @@ fi
 exec 1>&3 2>&4
 echo >&2
 print_test "Name resolution" "$TEST_RESULT"
-       
-# touch /home/memer10/$HOSTNAME
 
 # Expected results:
 
