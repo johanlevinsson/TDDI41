@@ -51,7 +51,7 @@ fi
 exec 1>&3 2>&4
 echo >&2
 print_test "Name resolution" "$TEST_RESULT"
-printf "\n"
+
 # Expected results:
 
 # all [OK]

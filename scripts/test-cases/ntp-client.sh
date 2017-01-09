@@ -17,5 +17,5 @@ else
 fi
 
 print_test ntp-client $TEST_RESULT
-
+printf "\n"
 # Expected results:
