@@ -35,7 +35,7 @@ source ./dns-recursive.sh
 source ./dns-reverse.sh
 
 printf "\nRunning remote tests on router: \n"
-ssh root@gw.c4.sysinst.ida.liu.se 'bash -s' < ./master-router.sha
+ssh root@gw.c4.sysinst.ida.liu.se 'bash -s' < ./master-router.sh
 
 printf "\nRunning remote tests on server: \n"
 ssh root@server.c4.sysinst.ida.liu.se 'bash -s' < ./master-server.sh

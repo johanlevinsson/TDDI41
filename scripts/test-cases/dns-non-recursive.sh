@@ -30,32 +30,28 @@ ROUTER=$(dig +short gw.c4.sysinst.ida.liu.se @server.c4.sysinst.ida.liu.se)
 
 if [ "$CLIENT1" == "130.236.178.220" ]; then
     CLIENT1=okey
-    echo "Non recursive query client-1 okey"
 fi
 
 if [ "$CLIENT2" == "130.236.178.221" ]; then
     CLIENT2=okey
-    echo "Non recursive query client-2 okey"
 fi
 
 if [ "$SERVER" == "130.236.178.219" ]; then
     SERVER=okey
-    echo "Non recursive query server okey"
 fi
 if [ "$ROUTER" == "130.236.178.218" ]; then
     ROUTER=okey
-    echo "Non recursive query gw okey"
 fi
     
 # exec 1>&3 2>&4
 # echo >&2
 
 print_test "Non recursive DNS gw" "$ROUTER"
-printf "\n"
+#printf "\n" 
 print_test "Non recursive DNS server" "$SERVER"
-printf "\n"
+#printf "\n"
 print_test "Non recursive DNS client-1" "$CLIENT1"
-printf "\n"
+#printf "\n"
 print_test "Non recursive DNS client-2" "$CLIENT2"
-printf "\n"
+#printf "\n"
 # Expected results:
