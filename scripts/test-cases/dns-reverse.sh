@@ -47,7 +47,7 @@ fi
 # echo >&2
 
 print_test "Reverse DNS gw" "$ROUTER"
-printf "\n"
+printf "\n\n"
 print_test "Reverse DNS server" "$SERVER"
 printf "\n"
 print_test "Reverse DNS client-1" "$CLIENT1"
